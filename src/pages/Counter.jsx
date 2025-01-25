@@ -37,7 +37,6 @@ const Counter = () => {
       const response = await axios.get(
         `${API_BASE_URL}/dishes/counter/${counterId}`
       );
-
       const { dishes } = response.data;
       dispatch(setDishes(dishes));
     } catch (error) {
@@ -50,8 +49,6 @@ const Counter = () => {
   useEffect(() => {
     fetchDishes();
   }, [counterId]);
-
-  console.log(dishes);
 
   return (
     <Box sx={{ padding: 2 }}>

@@ -6,8 +6,38 @@ import Admin from "./pages/Admin";
 import Merchant from "./pages/Merchant";
 import Profile from "./pages/Profile";
 import Navbar from "./components/Navbar";
+import { setCurrentUser, setLoading } from "./slices/authSlice";
+import { setCart } from "./slices/cartSlice";
+import axios from "axios";
+import { API_BASE_URL } from "./utils/apiConfigs";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
 
 function App() {
+  const dispatch = useDispatch();
+  // const user = useSelector((state) => state.auth.currentUser);
+
+  const fetchCart = async () => {
+    try {
+      dispatch(setLoading(true));
+      const response = await axios.get(`${API_BASE_URL}/cart`);
+  
+      const {user, cart} = response.data;
+      
+      dispatch(setCurrentUser(user));
+      dispatch(setCart(cart));
+
+    } catch (error) {
+      console.log("Error fetching user", error.message);
+    } finally {
+      dispatch(setLoading(false));
+    }
+  }
+
+  useEffect(() => {
+    fetchCart();
+  }, []);
+
   return (
     <>
       <Router>
