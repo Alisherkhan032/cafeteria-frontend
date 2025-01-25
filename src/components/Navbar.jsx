@@ -1,9 +1,27 @@
-import React from 'react'
+import React from "react";
+import { Link } from "react-router-dom";
+import LeftNavbar from "./LeftNavbar";
+import RightNavbar from "./RightNavbar";
 
 const Navbar = () => {
-  return (
-    <div>Navbar</div>
-  )
-}
 
-export default Navbar
+
+  return (
+    <div className="navbar flex items-center justify-between px-4 py-2 border border-black bg-gray-100">
+      <LeftNavbar />
+
+      <div className="flex items-center space-x-4">
+        <Link to="/">Home</Link>
+        <Link to="/cart">Cart</Link>
+        <Link to="/admin">Admin</Link>
+        <Link to="/merchant">Merchant</Link>
+        <Link to="/profile">Profile</Link>
+      </div>
+
+      <RightNavbar />
+
+    </div>
+  );
+};
+
+export default Navbar;
