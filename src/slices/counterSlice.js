@@ -40,7 +40,7 @@ const counterSlice = createSlice({
 export const selectCounters = (state)=> state.counter.counters;
 export const selectCurrentCounter = (state)=> state.counter.currentCounter;
 export const dishesInCounter = (state)=> state.counter.dishes;
-export const loadingState = (state)=> state.counter.loading;
+export const selectloadingState = (state)=> state.counter.loading;
 
 export const { setCounter, setLoading, setDishes, setCurrentCounter, updateDish, removeDish } = counterSlice.actions;
 

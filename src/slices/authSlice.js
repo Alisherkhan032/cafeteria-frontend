@@ -5,6 +5,7 @@ const authSlice = createSlice({
     initialState: {
         currentUser: null,  
         loading: true,
+        merchantCounters : []
     },
     reducers: {
         setCurrentUser: (state, action) => {
@@ -16,10 +17,16 @@ const authSlice = createSlice({
         },
         setLoading : (state, action) => {
             state.loading = !!action.payload;
+        },
+        setMerchantCounters  : (state, action) => {
+            state.merchantCounters = action.payload;
         }
     }
 });
 
-export const { setCurrentUser, removeCurrentUser, setLoading } = authSlice.actions;
+export const selectCurrentUser = (state) => state.auth.currentUser;
+export const selectMerchantCounters = (state) => state.auth.merchantCounters
+
+export const { setCurrentUser, removeCurrentUser, setLoading, setMerchantCounters } = authSlice.actions;
 
 export default authSlice.reducer;

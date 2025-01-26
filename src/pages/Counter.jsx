@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import {
   setDishes,
   dishesInCounter,
-  loadingState,
+  selectloadingState,
   setLoading,
   selectCurrentCounter,
 } from "@/slices/counterSlice";
@@ -27,7 +27,7 @@ const CounterSkeleton = () => (
 const Counter = () => {
   const dispatch = useDispatch();
   const dishes = useSelector(dishesInCounter);
-  const loading = useSelector(loadingState);
+  const loading = useSelector(selectloadingState);
   const counterName = useSelector(selectCurrentCounter);
   const { counterId } = useParams();
 
