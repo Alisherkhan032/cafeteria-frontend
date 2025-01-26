@@ -48,6 +48,9 @@ const Counter = () => {
 
   useEffect(() => {
     fetchDishes();
+    return ()=>{
+      dispatch(setDishes([]));
+    }
   }, [counterId]);
 
   return (

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { selectItemsFromCart } from "@/slices/cartSlice";
 import { useDispatch, useSelector } from "react-redux";
+import { updateDish, removeDish } from "@/slices/counterSlice";
 import { setCart } from "@/slices/cartSlice";
 import axios from "axios";
 import { API_BASE_URL } from "@/utils/apiConfigs";
@@ -11,7 +12,11 @@ import EditDishModal from "./EditDishModal ";
 const DishList = ({ dishes }) => {
   const dispatch = useDispatch();
   const totalItemsInCart = useSelector(selectItemsFromCart);
-  const [isLoading, setIsLoading] = useState(false); // Track global loading state
+  const [isLoading, setIsLoading] = useState(false);
+  const [selectedDish, setSelectedDish] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  console.log('totalItemsInCart:', totalItemsInCart);
 
   const isItemInCart = (id) => {
     return totalItemsInCart.some((item) => item.dish._id === id);
@@ -19,14 +24,62 @@ const DishList = ({ dishes }) => {
 
   const handleAddToCart = async (dish) => {
     try {
-      setIsLoading(true); // Start loading
+      setIsLoading(true);
       const dishResponse = await axios.post(`${API_BASE_URL}/cart`, { dish });
       const updatedCart = dishResponse.data.cart;
       dispatch(setCart(updatedCart));
     } catch (error) {
       console.error("Failed to add item to cart", error);
     } finally {
-      setIsLoading(false); // Stop loading
+      setIsLoading(false);
+    }
+  };
+
+  const handleEditClick = (dish) => {
+    console.log("Edit clicked:", dish);
+    setSelectedDish(dish);
+    setIsModalOpen(true);
+  };
+
+  const handleEditClose = () => {
+    setIsModalOpen(false);
+    setSelectedDish(null);
+  };
+
+  const handleEditSave = async (updatedDish) => {
+    console.log("Saving updated dish:", updatedDish);
+    try {
+      setIsLoading(true);
+      const response = await axios.patch(
+        `${API_BASE_URL}/dishes/${updatedDish.id}`,
+        updatedDish
+      );
+      const updatedDishFromServer = response.data.dish;
+      dispatch(updateDish(updatedDishFromServer));
+    } catch (error) {
+      console.error("Failed to update dish", error);
+    } finally {
+      setIsLoading(false);
+      setIsModalOpen(false);
+      setSelectedDish(null);
+    }
+  };
+
+  const handleDeleteDish = async (id) => {
+    console.log("Deleting dish:", id);
+    try {
+      setIsLoading(true);
+      const response = await axios.delete(
+        `${API_BASE_URL}/dishes/${id}`,
+      );
+      const deletedDishFromServer = response.data.dish;
+
+      dispatch(removeDish(deletedDishFromServer));
+    } catch (error) {
+      console.error("Failed to update dish", error);
+    } finally {
+      setIsLoading(false);
+      setSelectedDish(null);
     }
   };
 
@@ -48,7 +101,7 @@ const DishList = ({ dishes }) => {
           >
             <div className="flex gap-6">
               <img
-                src={`/images/${dish.image}`}
+                src={dish.image}
                 alt={dish.name}
                 className="w-32 h-32 object-cover rounded-xl"
               />
@@ -80,17 +133,25 @@ const DishList = ({ dishes }) => {
                   <button
                     onClick={() => handleAddToCart(dish)}
                     className={`px-4 py-2 bg-blue-500 text-white font-semibold rounded-lg ${
-                      isLoading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
+                      isLoading
+                        ? "opacity-50 cursor-not-allowed"
+                        : "cursor-pointer"
                     }`}
                     disabled={isLoading || !dish.inStock}
                   >
                     Add to Cart
                   </button>
                 )}
-                <div className="cursor-pointer">
+                <div
+                  className="cursor-pointer"
+                  onClick={() => handleEditClick(dish)}
+                >
                   <i className="fi fi-rr-edit"></i>
                 </div>
-                <div className="cursor-pointer">
+                <div
+                  className="cursor-pointer"
+                  // onClick={() => handleDeleteDish(dish._id)}
+                >
                   <i className="fi fi-rr-trash text-red-600"></i>
                 </div>
               </div>
@@ -98,6 +159,16 @@ const DishList = ({ dishes }) => {
           </li>
         ))}
       </ul>
+
+      {/* Edit Dish Modal */}
+      {selectedDish && (
+        <EditDishModal
+          dish={selectedDish}
+          onSave={handleEditSave}
+          onClose={handleEditClose}
+          isOpen={isModalOpen}
+        />
+      )}
     </div>
   );
 };
