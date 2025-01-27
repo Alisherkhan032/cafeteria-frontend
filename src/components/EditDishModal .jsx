@@ -1,23 +1,5 @@
 import React, { useState, useEffect } from "react";
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
-import Modal from "@mui/material/Modal";
-import TextField from "@mui/material/TextField";
-import Switch from "@mui/material/Switch";
-import FormControlLabel from "@mui/material/FormControlLabel";
-
-const modalStyle = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: 500,
-  bgcolor: "background.paper",
-  boxShadow: 24,
-  p: 4,
-  borderRadius: "12px",
-};
+import { X, Save } from "lucide-react";
 
 const EditDishModal = ({ dish, onSave, onClose, isOpen }) => {
   const [formData, setFormData] = useState({
@@ -31,22 +13,30 @@ const EditDishModal = ({ dish, onSave, onClose, isOpen }) => {
 
   const [errors, setErrors] = useState({});
 
-  // Reset form data when dish changes
+  useEffect(() => {
+    if (isOpen) {
+      // Prevent body scroll when modal is open
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [isOpen]);
+
   useEffect(() => {
     setFormData({
       id: dish?._id || "",
       name: dish?.name || "",
       description: dish?.description || "",
       price: dish?.price || 0,
+      image: dish?.image || "",
       category: dish?.category || "",
       inStock: dish?.inStock || false,
     });
   }, [dish]);
-
-  const handleClose = () => {
-    console.log("Closing modal...");
-    onClose(); // Call the parent's close handler
-  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -67,89 +57,173 @@ const EditDishModal = ({ dish, onSave, onClose, isOpen }) => {
   };
 
   const handleSave = () => {
-    if (!validateForm()) return; // Stop if validation fails
-    console.log("Saving data:", formData);
-    onSave(formData); // Trigger save callback with updated form data
-    handleClose();
+    if (!validateForm()) return;
+    onSave(formData);
+    onClose();
   };
 
+  if (!isOpen) return null;
+
   return (
-    <Modal
-      open={isOpen}
-      onClose={handleClose}
-      aria-labelledby="edit-dish-title"
-      aria-describedby="edit-dish-description"
-    >
-      <Box sx={modalStyle}>
-        <Typography id="edit-dish-title" variant="h6" component="h2" mb={2}>
-          Edit Dish
-        </Typography>
-        <Box
-          component="form"
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            gap: 2,
-          }}
-        >
-          <TextField
-            label="Name"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            error={!!errors.name}
-            helperText={errors.name}
-            fullWidth
-          />
-          <TextField
-            label="Description"
-            name="description"
-            value={formData.description}
-            onChange={handleChange}
-            fullWidth
-            multiline
-            rows={3}
-          />
-          <TextField
-            label="Price"
-            name="price"
-            type="number"
-            value={formData.price}
-            onChange={handleChange}
-            error={!!errors.price}
-            helperText={errors.price}
-            fullWidth
-          />
-          <TextField
-            label="Category"
-            name="category"
-            value={formData.category}
-            onChange={handleChange}
-            error={!!errors.category}
-            helperText={errors.category}
-            fullWidth
-          />
-          <FormControlLabel
-            control={
-              <Switch
+    <div className="fixed inset-0 bg-black/60 no-scrollbar backdrop-blur-sm z-50 flex items-center justify-center p-4">
+      <div
+        className="w-full max-w-lg bg-gray-800 rounded-xl shadow-xl max-h-[90vh] flex flex-col"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Header - Fixed */}
+        <div className="flex items-center justify-between p-4 border-b border-gray-700">
+          <h2 className="text-xl font-semibold text-white">Edit Dish</h2>
+          <button
+            onClick={onClose}
+            className="p-2 hover:bg-gray-700 rounded-lg transition-colors"
+          >
+            <X className="h-5 w-5 text-gray-400 hover:text-white" />
+          </button>
+        </div>
+
+        {/* Form - Scrollable */}
+        <div className="flex-1 overflow-y-auto p-4 space-y-4">
+          {/* Name Input */}
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-1">
+              Name
+            </label>
+            <input
+              type="text"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              className={`w-full bg-gray-700 border ${
+                errors.name ? "border-red-500" : "border-gray-600"
+              } rounded-lg px-3 py-2 text-white focus:border-purple-500 focus:ring-1 focus:ring-purple-500 focus:outline-none`}
+            />
+            {errors.name && (
+              <p className="mt-1 text-sm text-red-500">{errors.name}</p>
+            )}
+          </div>
+
+          {/* Description Input */}
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-1">
+              Description
+            </label>
+            <textarea
+              name="description"
+              value={formData.description}
+              onChange={handleChange}
+              rows="3"
+              className="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white focus:border-purple-500 focus:ring-1 focus:ring-purple-500 focus:outline-none"
+            />
+          </div>
+
+          {/* Price Input */}
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-1">
+              Price
+            </label>
+            <input
+              type="number"
+              name="price"
+              value={formData.price}
+              onChange={handleChange}
+              className={`w-full bg-gray-700 border ${
+                errors.price ? "border-red-500" : "border-gray-600"
+              } rounded-lg px-3 py-2 text-white focus:border-purple-500 focus:ring-1 focus:ring-purple-500 focus:outline-none`}
+            />
+            {errors.price && (
+              <p className="mt-1 text-sm text-red-500">{errors.price}</p>
+            )}
+          </div>
+
+          {/* Image link Input */}
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-1">
+              Image link
+            </label>
+            <input
+              type="text"
+              name="image"
+              value={formData.image}
+              onChange={handleChange}
+              className={`w-full bg-gray-700 border ${
+                errors.price ? "border-red-500" : "border-gray-600"
+              } rounded-lg px-3 py-2 text-white focus:border-purple-500 focus:ring-1 focus:ring-purple-500 focus:outline-none`}
+            />
+            {errors.price && (
+              <p className="mt-1 text-sm text-red-500">{errors.price}</p>
+            )}
+          </div>
+
+          {/* Category Input */}
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-1">
+              Category
+            </label>
+            <div className="flex items-center space-x-4">
+              {/* Veg Option */}
+              <label className="flex items-center space-x-2">
+                <input
+                  type="radio"
+                  name="category"
+                  value="Veg"
+                  checked={formData.category === "Veg"}
+                  onChange={handleChange}
+                  className="form-radio h-4 w-4 text-purple-500 border-gray-600 focus:ring-purple-500 bg-gray-700"
+                />
+                <span className="text-gray-300">Veg</span>
+              </label>
+
+              {/* Non-Veg Option */}
+              <label className="flex items-center space-x-2">
+                <input
+                  type="radio"
+                  name="category"
+                  value="Non-Veg"
+                  checked={formData.category === "Non-Veg"}
+                  onChange={handleChange}
+                  className="form-radio h-4 w-4 text-purple-500 border-gray-600 focus:ring-purple-500 bg-gray-700"
+                />
+                <span className="text-gray-300">Non-Veg</span>
+              </label>
+            </div>
+            {errors.category && (
+              <p className="mt-1 text-sm text-red-500">{errors.category}</p>
+            )}
+          </div>
+
+          {/* In Stock Toggle */}
+          <div className="flex items-center justify-between py-2">
+            <span className="text-sm font-medium text-gray-300">In Stock</span>
+            <label className="relative inline-flex items-center cursor-pointer">
+              <input
+                type="checkbox"
                 checked={formData.inStock}
                 onChange={handleSwitchChange}
-                name="inStock"
+                className="sr-only peer"
               />
-            }
-            label="In Stock"
-          />
-          <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}>
-            <Button variant="outlined" onClick={handleClose}>
-              Cancel
-            </Button>
-            <Button variant="contained" onClick={handleSave}>
-              Save
-            </Button>
-          </Box>
-        </Box>
-      </Box>
-    </Modal>
+              <div className="w-11 h-6 bg-gray-600 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
+            </label>
+          </div>
+        </div>
+
+        {/* Footer - Fixed */}
+        <div className="flex items-center justify-end gap-3 p-4 border-t border-gray-700">
+          <button
+            onClick={onClose}
+            className="px-4 py-2 text-gray-300 hover:text-white hover:bg-gray-700 rounded-lg transition-colors"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={handleSave}
+            className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg flex items-center gap-2 transition-colors"
+          >
+            <Save className="h-4 w-4" />
+            Save Changes
+          </button>
+        </div>
+      </div>
+    </div>
   );
 };
 

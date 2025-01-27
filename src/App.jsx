@@ -12,6 +12,7 @@ import axios from "axios";
 import { API_BASE_URL } from "./utils/apiConfigs";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
+import LandingPage from "./pages/LandingPage";
 
 function App() {
   const dispatch = useDispatch();
@@ -43,7 +44,8 @@ function App() {
       <Router>
         <Navbar />
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/home" element={<Home />} />
           <Route path="/counter/:counterId" element={<Counter />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/admin" element={<Admin />} />

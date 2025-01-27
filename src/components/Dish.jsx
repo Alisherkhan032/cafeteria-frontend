@@ -1,68 +1,98 @@
-import React from 'react';
-import { Link } from "react-router-dom";
+import React from "react";
+import { ShoppingCart, Edit2, Trash2 } from "lucide-react";
+import { Link } from 'react-router-dom'; // Import Link from react-router-dom
 
-const Dish = ({ 
-  dish, 
-  isLoading, 
-  isInCart, 
-  onAddToCart, 
-  onEditClick, 
-  onDeleteClick 
+const Dish = ({
+  dish,
+  isLoading,
+  isInCart,
+  onAddToCart,
+  onEditClick,
+  onDeleteClick,
 }) => {
   return (
-    <li className="p-6 bg-white shadow-lg rounded-3xl border hover:shadow-xl transition-shadow duration-300">
-      <div className="flex gap-6">
+    <div
+      className="bg-gray-800/50 relative backdrop-blur-sm rounded-xl overflow-hidden border border-gray-700/50 
+  hover:border-purple-500/50 transition-all duration-300 group flex flex-col h-full"
+    >
+      <div className="aspect-video relative overflow-hidden flex-shrink-0">
         <img
-          src={dish.image}
+          src={dish.image || "/api/placeholder/400/300"}
           alt={dish.name}
-          className="w-32 h-32 object-cover rounded-xl"
+          className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500"
         />
+        <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-transparent to-transparent opacity-80" />
+      </div>
 
-        <div className="flex-1">
-          <h3 className="text-3xl font-semibold mb-2 text-gray-800">
-            {dish.name}
-          </h3>
-          <p className="text-lg text-gray-600 mb-2">{dish.description}</p>
-          <p className="text-xl font-bold text-gray-900 mb-2">
+      {/* Content Section */}
+      <div className="p-6 flex flex-col flex-grow">
+        <div className="flex justify-between items-start mb-4">
+          <div>
+            <h3 className="text-xl font-bold text-white mb-2">{dish.name}</h3>
+            <p className="text-gray-400 text-sm line-clamp-2">
+              {dish.description}
+            </p>
+          </div>
+          <span className="text-lg font-bold text-purple-400">
             ₹{dish.price}
-          </p>
-          <p className="text-sm text-gray-500 mb-1">{dish.category}</p>
-          <p className={`text-sm ${dish.inStock ? "text-green-500" : "text-red-500"}`}>
-            {dish.inStock ? "In Stock" : "Out of Stock"}
-          </p>
+          </span>
         </div>
 
-        <div className="flex items-center gap-x-2">
-          {isInCart ? (
-            <span className="px-4 py-2 bg-green-400 hover:bg-green-500 text-white cursor-pointer font-semibold rounded-lg">
-              <Link to="/cart">Go to Cart</Link>
-            </span>
-          ) : (
-            <button
-              onClick={() => onAddToCart(dish)}
-              className={`px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg ${
-                isLoading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
-              }`}
-              disabled={isLoading || !dish.inStock}
-            >
-              Add to Cart
-            </button>
-          )}
-          <div
-            className="cursor-pointer"
-            onClick={() => onEditClick(dish)}
-          >
-            <i className="fi fi-rr-edit"></i>
-          </div>
-          <div
-            className="cursor-pointer"
-            onClick={() => onDeleteClick(dish._id)}
-          >
-            <i className="fi fi-rr-trash text-red-600"></i>
+        {/* Buttons Section (Sticky to Bottom) */}
+        <div className="mt-auto pt-4">
+          <div className="flex items-center justify-between">
+            <div className="flex gap-2">
+              <button
+                onClick={() => onEditClick(dish)}
+                className="p-2 text-gray-400 hover:text-white hover:bg-gray-700/50 rounded-lg transition-colors"
+                disabled={isLoading}
+              >
+                <Edit2 className="h-5 w-5" />
+              </button>
+              <button
+                onClick={() => onDeleteClick(dish._id)}
+                className="p-2 text-gray-400 hover:text-red-400 hover:bg-gray-700/50 rounded-lg transition-colors"
+                disabled={isLoading}
+              >
+                <Trash2 className="h-5 w-5" />
+              </button>
+            </div>
+
+            {isInCart ? (
+              <Link to="/cart" className="">
+                {" "}
+                <button
+                  disabled={isLoading}
+                  className={`px-4 py-2 rounded-lg flex items-center gap-2 cursor-pointer transition-all duration-300
+          ${
+            isInCart
+              ? "bg-green-600/20 hover:bg-green-700/20 text-green-400"
+              : "bg-purple-600 hover:bg-purple-700 text-white"
+          }`}
+                >
+                  <ShoppingCart className="h-5 w-5" />
+                  Go to Cart
+                </button>
+              </Link>
+            ) : (
+              <button
+                onClick={() => onAddToCart(dish)}
+                disabled={isLoading}
+                className={` px-4 py-2 rounded-lg flex items-center gap-2 cursor-pointer transition-all duration-300
+        ${
+          isInCart
+            ? "bg-green-600/20 hover:bg-green-700/20 text-green-400"
+            : "bg-purple-600 hover:bg-purple-700 text-white"
+        }`}
+              >
+                <ShoppingCart className="h-5 w-5" />
+                Add to Cart
+              </button>
+            )}
           </div>
         </div>
       </div>
-    </li>
+    </div>
   );
 };
 

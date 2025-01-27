@@ -3,11 +3,20 @@ import { selectItemsFromCart } from "@/slices/cartSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { updateDish, removeDish } from "@/slices/counterSlice";
 import { setCart } from "@/slices/cartSlice";
+import { PlusCircle, Loader2 } from 'lucide-react';
 import axios from "axios";
 import { API_BASE_URL } from "@/utils/apiConfigs";
-import CircularProgress from "@mui/material/CircularProgress";
 import Dish from "./Dish";
 import EditDishModal from "./EditDishModal ";
+
+const LoadingOverlay = () => (
+  <div className="fixed inset-0 bg-gray-900/50 backdrop-blur-sm z-50 flex items-center justify-center">
+    <div className="bg-gray-800 rounded-lg p-4 flex items-center gap-3">
+      <Loader2 className="h-6 w-6 text-purple-500 animate-spin" />
+      <span className="text-gray-200">Processing...</span>
+    </div>
+  </div>
+);
 
 const DishList = ({ dishes }) => {
   const dispatch = useDispatch();
@@ -76,24 +85,26 @@ const DishList = ({ dishes }) => {
 
   return (
     <div className="relative">
-      {isLoading && (
-        <div className="fixed inset-0 bg-transparent bg-opacity-50 z-50 flex items-center justify-center">
-          <CircularProgress color="inherit" />
+      {isLoading && <LoadingOverlay />}
+      
+      <div className="flex justify-between items-center  mb-8">
+        <div>
+          <h2 className="text-3xl font-bold text-white mb-2">Menu</h2>
+          <p className="text-gray-400">Explore our delicious dishes</p>
         </div>
-      )}
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-3xl font-semibold text-center text-gray-700">
-          Dishes
-        </h2>
         <button
-          className={`px-4 py-2 bg-cyan-600 cursor-pointer hover:bg-cyan-700 text-white font-semibold rounded-lg`}
+          className="px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-xl
+            flex items-center gap-2 transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed
+            shadow-lg shadow-purple-600/20"
           disabled={isLoading}
-          
         >
+          <PlusCircle className="h-5 w-5" />
           Add Dish
         </button>
       </div>
-      <ul className={`flex flex-col gap-6 ${isLoading ? "opacity-50" : ""}`}>
+
+      <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 
+        ${isLoading ? "opacity-50" : ""} transition-opacity duration-200`}>
         {dishes.map((dish) => (
           <Dish
             key={dish._id}
@@ -105,7 +116,7 @@ const DishList = ({ dishes }) => {
             onDeleteClick={handleDeleteDish}
           />
         ))}
-      </ul>
+      </div>
 
       {selectedDish && (
         <EditDishModal

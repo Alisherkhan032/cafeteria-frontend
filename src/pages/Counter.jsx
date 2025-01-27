@@ -10,19 +10,16 @@ import {
 } from "@/slices/counterSlice";
 import { useParams } from "react-router-dom";
 import { API_BASE_URL } from "@/utils/apiConfigs";
-import Skeleton from "@mui/material/Skeleton";
-import Stack from "@mui/material/Stack";
-import Box from "@mui/material/Box";
+import { Store, ChefHat } from 'lucide-react';
 import axios from "axios";
 import DishList from "@/components/DishList";
 
 const CounterSkeleton = () => (
-  <Box sx={{ width: "100%", marginBottom: 2 }}>
-    <Stack spacing={1}>
-      <Skeleton variant="text" sx={{ fontSize: "1.5rem", width: "60%" }} />
-      <Skeleton variant="rectangular" width="100%" height={120} />
-    </Stack>
-  </Box>
+  <div className="w-full mb-6 animate-pulse">
+    <div className="h-48 bg-gray-800/50 rounded-lg mb-4"></div>
+    <div className="h-4 bg-gray-800/50 rounded w-3/4 mb-2"></div>
+    <div className="h-4 bg-gray-800/50 rounded w-1/2"></div>
+  </div>
 );
 
 const Counter = () => {
@@ -35,7 +32,7 @@ const Counter = () => {
 
   const fetchDishes = async () => {
     try {
-      dispatch(setLoading(true)); // Start loading
+      dispatch(setLoading(true));
       const response = await axios.get(
         `${API_BASE_URL}/dishes/counter/${counterId}`
       );
@@ -44,20 +41,20 @@ const Counter = () => {
     } catch (error) {
       console.error("Error fetching dishes:", error.message);
     } finally {
-      dispatch(setLoading(false)); // End loading
+      dispatch(setLoading(false));
     }
   };
   
   const fetchCounter = async () => {
     try {
-      dispatch(setLoading(true)); // Start loading
+      dispatch(setLoading(true));
       const response = await axios.get(`${API_BASE_URL}/counters/${counterId}`);
       const currentCounter = response.data;
       dispatch(setCurrentCounter(currentCounter));
     } catch (error) {
       console.error("Error fetching counter:", error.message);
     } finally {
-      dispatch(setLoading(false)); // End loading
+      dispatch(setLoading(false));
     }
   };
   
@@ -66,37 +63,54 @@ const Counter = () => {
     fetchCounter();
   
     return () => {
-      // Cleanup on unmount
       dispatch(setDishes([]));
       dispatch(setCurrentCounter(null));
     };
   }, [counterId]);
-  
 
   return (
-    <Box sx={{ padding: 2 }}>
-  {loading ? (
-    <div className="">
-      {Array.from(new Array(6)).map((_, index) => (
-        <CounterSkeleton key={index} />
-      ))}
-    </div>
-  ) : (
-    <>
-      <h1 className="text-4xl font-bold mb-6 text-center text-gray-800">
-        Counter: {counterName}
-      </h1>
-      {dishes && dishes.length > 0 ? (
-        <DishList dishes={dishes} />
-      ) : (
-        <div className="text-center mt-10">
-          <p className="text-gray-500 text-lg">No Dishes available.</p>
-        </div>
-      )}
-    </>
-  )}
-</Box>
+    <div className="min-h-screen px-20 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-16">
+        {loading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {Array.from(new Array(6)).map((_, index) => (
+              <CounterSkeleton key={index} />
+            ))}
+          </div>
+        ) : (
+          <>
+            <div className="text-center mb-12 -mt-10">
+              <div className="inline-flex items-center justify-center p-3 bg-gray-800 rounded-full mb-4">
+                <Store className="h-8 w-8 text-purple-500" />
+              </div>
+              <h1 className="text-4xl font-bold text-white mb-4">
+                {counterName}
+              </h1>
+              <div className="h-1 w-20 bg-purple-500 mx-auto rounded-full"></div>
+            </div>
 
+            {dishes && dishes.length > 0 ? (
+              <div className="relative">
+                <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-blue-500/10 rounded-xl blur-3xl"></div>
+                <div className="relative">
+                  <DishList dishes={dishes} />
+                </div>
+              </div>
+            ) : (
+              <div className="text-center py-16 bg-gray-800/50 rounded-xl backdrop-blur-sm">
+                <ChefHat className="h-16 w-16 text-gray-600 mx-auto mb-4" />
+                <p className="text-gray-400 text-lg">
+                  No dishes available at this counter yet.
+                </p>
+                <p className="text-gray-500 mt-2">
+                  Please check back later for updates.
+                </p>
+              </div>
+            )}
+          </>
+        )}
+      </div>
+    </div>
   );
 };
 
