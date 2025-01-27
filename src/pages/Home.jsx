@@ -41,9 +41,9 @@ const Home = () => {
     fetchCounters();
   }, []);
 
-  const handleCounterClick = (counterId, counterName) => {
-    console.log('name', counterName);
-    dispatch(setCurrentCounter(counterName));
+  const handleCounterClick = (counterId, counter) => {
+    console.log('cuurent counter', counter);
+    dispatch(setCurrentCounter(counter));
     navigate(`/counter/${counterId}`);
   };
 
@@ -63,7 +63,7 @@ const Home = () => {
             <li
               key={counter._id}
               className="p-4 bg-white shadow-lg rounded-2xl border hover:shadow-2xl transition-shadow duration-300 cursor-pointer"
-              onClick={() => handleCounterClick(counter._id, counter.name)}
+              onClick={() => handleCounterClick(counter._id, counter)}
             >
               <h3 className="text-2xl font-semibold mb-2 text-gray-800">
                 {counter.name}

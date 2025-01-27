@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import axios from 'axios'
 import { API_BASE_URL } from '@/utils/apiConfigs'
 import { CounterSkeleton } from '@/utils/skeletonConfig'
+import MerchantCounters from '@/components/MerchantCounters'
 
 const Merchant = () => {
   const dispatch = useDispatch()
@@ -38,7 +39,7 @@ const Merchant = () => {
 
   return (
     <div>
-      <h1>All Counters</h1>
+
       {loading ? (
         <div className="">
           {Array.from(new Array(6)).map((_, index) => (
@@ -46,7 +47,7 @@ const Merchant = () => {
           ))}
         </div>
       ) : merchantCounters && merchantCounters.length > 0 ? (
-        <h1>merchant present</h1>
+        <MerchantCounters counters={merchantCounters} merchantName={merchant?.name} />
       ) : (
         <div className="text-center mt-10">
           <p className="text-gray-500 text-lg">No merchant Counters available.</p>
