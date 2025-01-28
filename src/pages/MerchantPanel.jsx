@@ -3,6 +3,7 @@ import {
   setLoading,
   selectloadingState,
   updateConter,
+  setCurrentCounter,
 } from "@/slices/counterSlice";
 import {
   selectCurrentUser,
@@ -13,25 +14,27 @@ import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { API_BASE_URL } from "@/utils/apiConfigs";
 import { CounterSkeleton } from "@/utils/skeletonConfig";
-import MerchantCounters from "@/components/MerchantCounters";
 import { Pencil } from "lucide-react";
 import EditCounterModal from "@/components/EditCounterModal";
+import { useNavigate } from "react-router-dom";
 
 const MerchantPanel = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const loading = useSelector(selectloadingState);
   const merchant = useSelector(selectCurrentUser);
   const merchantCounters = useSelector(selectMerchantCounters);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [selectedCounter, setSelectedCounter] = useState(null);
 
-  const handleEditClick = (e) => {
-    // e.stopPropagation();
-    setIsEditModalOpen(true);
+  const handleEditClick = (counter) => {
+    setSelectedCounter(counter); // Set the selected counter
+    setIsEditModalOpen(true); // Open the modal
   };
 
   const handleSave = (updatedCounter) => {
-    onEdit(updatedCounter);
-    setIsEditModalOpen(false);
+    handleEditCounter(updatedCounter); // Save the updated counter
+    setIsEditModalOpen(false); // Close the modal
   };
 
   const handleEditCounter = async (updatedData) => {
@@ -45,7 +48,7 @@ const MerchantPanel = () => {
       dispatch(updateConter(updatedCounter));
     } catch (error) {
       console.error("Error updating counter:", error);
-      //todo : toast notification
+      // TODO: Add toast notification
     } finally {
       dispatch(setLoading(false));
     }
@@ -57,7 +60,6 @@ const MerchantPanel = () => {
       const response = await axios.get(
         `${API_BASE_URL}/users/counters/merchant/${merchant._id}`
       );
-      console.log("Counters:", response.data);
       const counters = response.data.counters;
       dispatch(setMerchantCounters(counters));
     } catch (error) {
@@ -71,22 +73,29 @@ const MerchantPanel = () => {
     CountersOfMerchants();
   }, [merchant]);
 
+  const handleCounterClick = (counter) => {
+    dispatch(setCurrentCounter(counter));
+    navigate(`/counter/${counter._id}`);
+  };
+
   return (
-    <div className="min-h-screen px-20 py-10 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900">
-      {loading ? (
-        <div className="">
-          {Array.from(new Array(6)).map((_, index) => (
-            <CounterSkeleton key={index} />
-          ))}
-        </div>
-      ) : merchantCounters && merchantCounters.length > 0 ? (
-        <div className="space-y-4">
-          {merchantCounters.map((counter) => (
-            <>
+    <>
+      {/* Main content container */}
+      <div className="px-20 py-10 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900">
+        {loading ? (
+          <div className="">
+            {Array.from(new Array(6)).map((_, index) => (
+              <CounterSkeleton key={index} />
+            ))}
+          </div>
+        ) : merchantCounters && merchantCounters.length > 0 ? (
+          <div className="space-y-4">
+            {merchantCounters.map((counter) => (
               <div
                 key={counter._id}
-                className="group relative flex items-center bg-gray-800/50 backdrop-blur-sm rounded-xl overflow-hidden border border-gray-700/50 
-            hover:border-purple-500/50 transition-all duration-300 cursor-pointer p-4"
+                onClick={() => handleCounterClick(counter)}
+                className="relative flex items-center bg-gray-800/50 backdrop-blur-sm rounded-xl overflow-hidden border border-gray-700/50 
+                hover:border-purple-500/50 transition-all duration-300 cursor-pointer p-4"
               >
                 {/* Image Section */}
                 <div className="w-24 h-24 flex-shrink-0 relative">
@@ -100,12 +109,9 @@ const MerchantPanel = () => {
 
                 {/* Content Section */}
                 <div className="ml-4 flex-1">
-                  {/* Counter Name */}
                   <h3 className="text-xl font-bold text-white mb-1 group-hover:text-purple-400 transition-colors">
                     {counter.name}
                   </h3>
-
-                  {/* Merchant Names */}
                   <div className="flex flex-wrap gap-2 mb-2">
                     {counter.merchant.map((merchant, index) => (
                       <span
@@ -116,38 +122,43 @@ const MerchantPanel = () => {
                       </span>
                     ))}
                   </div>
-
-                  {/* Description */}
                   <p className="text-gray-200 text-sm line-clamp-2">
                     {counter.description}
                   </p>
                 </div>
 
-                {/* Edit Button (Optional) */}
+                {/* Edit Button */}
                 <button
-                  onClick={() => handleEditClick(counter)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleEditClick(counter);
+                  }}
                   className="bg-gray-900/60 backdrop-blur-sm p-2 rounded-lg hover:bg-gray-800 transition-colors self-start"
                 >
                   <Pencil className="h-4 w-4 text-white" />
                 </button>
               </div>
-              <EditCounterModal
-                counter={counter}
-                isOpen={isEditModalOpen}
-                onSave={handleSave}
-                onClose={() => setIsEditModalOpen(false)}
-              />
-            </>
-          ))}
-        </div>
-      ) : (
-        <div className="text-center mt-10">
-          <p className="text-gray-500 text-lg">
-            No merchant Counters available.
-          </p>
-        </div>
+            ))}
+          </div>
+        ) : (
+          <div className="text-center mt-10">
+            <p className="text-gray-500 text-lg">
+              No merchant Counters available.
+            </p>
+          </div>
+        )}
+      </div>
+
+      {/* Modal Portal */}
+      {selectedCounter && (
+        <EditCounterModal
+          counter={selectedCounter}
+          isOpen={isEditModalOpen}
+          onSave={handleSave}
+          onClose={() => setIsEditModalOpen(false)}
+        />
       )}
-    </div>
+    </>
   );
 };
 

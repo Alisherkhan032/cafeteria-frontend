@@ -53,9 +53,9 @@ const EditCounterModal = ({ counter, onSave, onClose, isOpen }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-50 flex items-start justify-center bg-black/50 backdrop-blur-sm overflow-y-auto py-10">
       <div
-        className="w-full max-w-lg bg-gray-800 rounded-xl shadow-xl max-h-[90vh] flex flex-col"
+        className="w-full max-w-lg  bg-gray-800 rounded-xl shadow-xl max-h-[90vh] flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between p-4 border-b border-gray-700">
