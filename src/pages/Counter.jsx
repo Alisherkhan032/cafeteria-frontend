@@ -93,7 +93,7 @@ const Counter = () => {
               <div className="relative">
                 <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-blue-500/10 rounded-xl blur-3xl"></div>
                 <div className="relative">
-                  <DishList dishes={dishes} />
+                  <DishList dishes={dishes} counterId={counterId} />
                 </div>
               </div>
             ) : (

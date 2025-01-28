@@ -73,7 +73,7 @@ const Cart = () => {
   useEffect(()=>{
     scroll({
       top: 0,
-      behavior: "instant"
+      behavior: "smooth"
     })
   },[])
 
@@ -146,7 +146,8 @@ const Cart = () => {
                                 </p>
                               </div>
                               <span className="text-lg font-bold text-purple-400 ml-4">
-                                ₹{item.dish.price}
+                                {/* ₹{item.dish.price} */}
+                                ₹{item.dish.price * item.quantity}
                               </span>
                             </div>
 

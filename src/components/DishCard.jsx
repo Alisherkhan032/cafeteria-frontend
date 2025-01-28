@@ -1,8 +1,8 @@
 import React from "react";
 import { ShoppingCart, Edit2, Trash2 } from "lucide-react";
-import { Link } from 'react-router-dom'; // Import Link from react-router-dom
+import { Link } from "react-router-dom"; // Import Link from react-router-dom
 
-const Dish = ({
+const DishCard = ({
   dish,
   isLoading,
   isInCart,
@@ -10,6 +10,8 @@ const Dish = ({
   onEditClick,
   onDeleteClick,
 }) => {
+  const isDishInStock = dish.inStock;
+
   return (
     <div
       className="bg-gray-800/50 relative backdrop-blur-sm rounded-xl overflow-hidden border border-gray-700/50 
@@ -58,17 +60,23 @@ const Dish = ({
               </button>
             </div>
 
-            {isInCart ? (
+            {!isDishInStock ? (
+              <button
+                disabled
+                className="px-4 py-2 rounded-lg flex items-center gap-2 opacity-50 cursor-not-allowed bg-gray-600/20 text-gray-400 transition-all duration-300"
+              >
+                <ShoppingCart className="h-5 w-5" />
+                Out of Stock
+              </button>
+            ) : isInCart ? (
               <Link to="/cart" className="">
-                {" "}
                 <button
                   disabled={isLoading}
-                  className={`px-4 py-2 rounded-lg flex items-center gap-2 cursor-pointer transition-all duration-300
-          ${
-            isInCart
-              ? "bg-green-600/20 hover:bg-green-700/20 text-green-400"
-              : "bg-purple-600 hover:bg-purple-700 text-white"
-          }`}
+                  className={`px-4 py-2 rounded-lg flex items-center gap-2 cursor-pointer transition-all duration-300 ${
+                    isInCart
+                      ? "bg-green-600/20 hover:bg-green-700/20 text-green-400"
+                      : "bg-purple-600 hover:bg-purple-700 text-white"
+                  }`}
                 >
                   <ShoppingCart className="h-5 w-5" />
                   Go to Cart
@@ -78,12 +86,11 @@ const Dish = ({
               <button
                 onClick={() => onAddToCart(dish)}
                 disabled={isLoading}
-                className={` px-4 py-2 rounded-lg flex items-center gap-2 cursor-pointer transition-all duration-300
-        ${
-          isInCart
-            ? "bg-green-600/20 hover:bg-green-700/20 text-green-400"
-            : "bg-purple-600 hover:bg-purple-700 text-white"
-        }`}
+                className={`px-4 py-2 rounded-lg flex items-center gap-2 cursor-pointer transition-all duration-300 ${
+                  isInCart
+                    ? "bg-green-600/20 hover:bg-green-700/20 text-green-400"
+                    : "bg-purple-600 hover:bg-purple-700 text-white"
+                }`}
               >
                 <ShoppingCart className="h-5 w-5" />
                 Add to Cart
@@ -96,4 +103,4 @@ const Dish = ({
   );
 };
 
-export default Dish;
+export default DishCard;

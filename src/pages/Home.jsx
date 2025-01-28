@@ -1,11 +1,12 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setCounter, setLoading } from "@/slices/counterSlice";
+import { setCounter, setLoading, updateConter } from "@/slices/counterSlice";
 import { API_BASE_URL } from "@/utils/apiConfigs";
 import { selectCounters, setCurrentCounter } from "@/slices/counterSlice";
-import { Store, Clock, Users, ChefHat } from 'lucide-react';
+import { Store, Clock, Users, ChefHat } from "lucide-react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import CounterCard from "@/components/CounterCard";
 
 const CounterSkeleton = () => (
   <div className="bg-gray-800/50 rounded-xl p-6 animate-pulse">
@@ -15,36 +16,6 @@ const CounterSkeleton = () => (
     <div className="mt-6 flex gap-4">
       <div className="h-6 w-6 bg-gray-700 rounded-full"></div>
       <div className="h-6 w-6 bg-gray-700 rounded-full"></div>
-    </div>
-  </div>
-);
-
-const CounterCard = ({ counter, onClick }) => (
-  <div 
-    onClick={onClick}
-    className="group bg-gray-800/50 backdrop-blur-sm rounded-xl p-6 hover:bg-gray-700/50 transition-all duration-300 cursor-pointer border border-gray-700/50 hover:border-purple-500/50"
-  >
-    <div className="flex items-start justify-between mb-4">
-      <div>
-        <h3 className="text-2xl font-bold text-white mb-2 group-hover:text-purple-400 transition-colors">
-          {counter.name}
-        </h3>
-        <p className="text-gray-400 line-clamp-2">{counter.description}</p>
-      </div>
-      <div className="bg-gray-900/50 p-2 rounded-lg">
-        <Store className="h-6 w-6 text-purple-400" />
-      </div>
-    </div>
-    
-    <div className="flex items-center gap-6 mt-6">
-      <div className="flex items-center gap-2 text-gray-400">
-        <Clock className="h-4 w-4" />
-        <span className="text-sm">Open Now</span>
-      </div>
-      <div className="flex items-center gap-2 text-gray-400">
-        <Users className="h-4 w-4" />
-        <span className="text-sm">Popular</span>
-      </div>
     </div>
   </div>
 );
@@ -71,17 +42,34 @@ const Home = () => {
   useEffect(() => {
     fetchCounters();
   }, []);
-  
-  useEffect(()=>{
+
+  useEffect(() => {
     scroll({
       top: 0,
-      behavior: "instant"
-    })
-  })
+      behavior: "instant",
+    });
+  });
 
   const handleCounterClick = (counterId, counter) => {
     dispatch(setCurrentCounter(counter));
     navigate(`/counter/${counterId}`);
+  };
+
+  const handleEditCounter = async (updatedData) => {
+    try {
+      dispatch(setLoading(true))
+      const response = await axios.put(
+        `${API_BASE_URL}/counters/${updatedData.id}`,
+        updatedData
+      );
+      const updatedCounter = response.data.counter;
+      dispatch(updateConter(updatedCounter))
+    } catch (error) {
+      console.error("Error updating counter:", error);
+      //todo : toast notification
+    } finally {
+      dispatch(setLoading(false))
+    }
   };
 
   return (
@@ -89,11 +77,10 @@ const Home = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-16">
         {/* Header Section */}
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-white mb-4">
-            Food Counters
-          </h1>
+          <h1 className="text-4xl font-bold text-white mb-4">Food Counters</h1>
           <p className="text-gray-400 max-w-2xl mx-auto">
-            Explore our diverse selection of food counters, each offering unique and delicious cuisines prepared by expert chefs.
+            Explore our diverse selection of food counters, each offering unique
+            and delicious cuisines prepared by expert chefs.
           </p>
         </div>
 
@@ -110,6 +97,7 @@ const Home = () => {
                 key={counter._id}
                 counter={counter}
                 onClick={() => handleCounterClick(counter._id, counter)}
+                onEdit={handleEditCounter}
               />
             ))}
           </div>

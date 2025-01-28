@@ -1,13 +1,14 @@
 import React, { useState } from "react";
 import { selectItemsFromCart } from "@/slices/cartSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { updateDish, removeDish } from "@/slices/counterSlice";
+import { updateDish, removeDish, addDish } from "@/slices/counterSlice";
 import { setCart } from "@/slices/cartSlice";
-import { PlusCircle, Loader2 } from 'lucide-react';
+import { PlusCircle, Loader2 } from "lucide-react";
 import axios from "axios";
 import { API_BASE_URL } from "@/utils/apiConfigs";
-import Dish from "./Dish";
+import Dish from "./DishCard";
 import EditDishModal from "./EditDishModal ";
+import CreateDishModal from "./CreateDishModal";
 
 const LoadingOverlay = () => (
   <div className="fixed inset-0 bg-gray-900/50 backdrop-blur-sm z-50 flex items-center justify-center">
@@ -18,12 +19,13 @@ const LoadingOverlay = () => (
   </div>
 );
 
-const DishList = ({ dishes }) => {
+const DishList = ({ dishes, counterId }) => {
   const dispatch = useDispatch();
   const totalItemsInCart = useSelector(selectItemsFromCart);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedDish, setSelectedDish] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [showCreateModal, setShowCreateModal] = useState(false);
 
   const isItemInCart = (id) => {
     return totalItemsInCart.some((item) => item.dish._id === id);
@@ -83,10 +85,26 @@ const DishList = ({ dishes }) => {
     }
   };
 
+  const handleCreateDish = async (newDish) => {
+    try {
+      setIsLoading(true);
+
+      const response = await axios.post(`${API_BASE_URL}/dishes`, {...newDish, counter:counterId});
+      console.log('response', response);
+      const createdDish = response.data.dish;
+      console.log('createdDish', createdDish);
+      dispatch(addDish(createdDish));
+    } catch (error) {
+      console.error("Error creating dish:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="relative">
       {isLoading && <LoadingOverlay />}
-      
+
       <div className="flex justify-between items-center  mb-8">
         <div>
           <h2 className="text-3xl font-bold text-white mb-2">Menu</h2>
@@ -97,14 +115,17 @@ const DishList = ({ dishes }) => {
             flex items-center gap-2 transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed
             shadow-lg shadow-purple-600/20"
           disabled={isLoading}
+          onClick={() => setShowCreateModal(true)}
         >
           <PlusCircle className="h-5 w-5" />
           Add Dish
         </button>
       </div>
 
-      <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 
-        ${isLoading ? "opacity-50" : ""} transition-opacity duration-200`}>
+      <div
+        className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 
+        ${isLoading ? "opacity-50" : ""} transition-opacity duration-200`}
+      >
         {dishes.map((dish) => (
           <Dish
             key={dish._id}
@@ -126,6 +147,12 @@ const DishList = ({ dishes }) => {
           isOpen={isModalOpen}
         />
       )}
+
+      <CreateDishModal
+        isOpen={showCreateModal}
+        onClose={() => setShowCreateModal(false)}
+        onSave={handleCreateDish}
+      />
     </div>
   );
 };

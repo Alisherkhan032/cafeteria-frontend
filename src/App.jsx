@@ -3,7 +3,7 @@ import Counter from "./pages/Counter";
 import Home from "./pages/Home";
 import Cart from "./pages/Cart";
 import Admin from "./pages/Admin";
-import Merchant from "./pages/Merchant";
+import Merchant from "./pages/MerchantPanel";
 import Profile from "./pages/Profile";
 import Navbar from "./components/Navbar";
 import { setCurrentUser, setLoading } from "./slices/authSlice";
