@@ -38,11 +38,15 @@ const counterSlice = createSlice({
       const newDish = action.payload;
       state.dishes.push(newDish);
     },
-    updateConter : (state, action) => {
+    updateCounter : (state, action) => {
       const updatedCounter = action.payload;
       const index = state.counters.findIndex((counter) => counter._id === updatedCounter._id);
       state.counters[index] = updatedCounter;
     },
+    addCounter : (state, action) => {
+      const newCounter = action.payload;
+      state.counters.push(newCounter);
+    }
   },
 });
 
@@ -51,6 +55,6 @@ export const selectCurrentCounter = (state)=> state.counter.currentCounter;
 export const dishesInCounter = (state)=> state.counter.dishes;
 export const selectloadingState = (state)=> state.counter.loading;
 
-export const { setCounter,updateConter, setLoading, setDishes, setCurrentCounter, updateDish, removeDish, addDish } = counterSlice.actions;
+export const {addCounter, setCounter,updateCounter, setLoading, setDishes, setCurrentCounter, updateDish, removeDish, addDish } = counterSlice.actions;
 
 export default counterSlice.reducer;

@@ -22,7 +22,7 @@ const LandingPage = () => {
         <div className="absolute inset-0 z-0">
           <img
             className="w-full h-full object-cover transform scale-105"
-            src="https://images.unsplash.com/photo-1550547660-d9450f859349?q=80&w=1965&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+            src="https://images.unsplash.com/photo-1532980400857-e8d9d275d858?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
             alt="Hero background"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/70 to-transparent"></div>
@@ -41,7 +41,7 @@ const LandingPage = () => {
                 to="/home"
                 className="bg-purple-600 text-white px-8 py-4 rounded-xl font-semibold hover:bg-purple-700 transition-all flex items-center gap-2 group"
               >
-                Explore Menu
+                Explore Restaurants
                 <ChevronRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
               </Link>
             </div>

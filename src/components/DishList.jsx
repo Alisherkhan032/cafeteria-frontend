@@ -127,15 +127,15 @@ const DishList = ({ dishes, counterId }) => {
         ${isLoading ? "opacity-50" : ""} transition-opacity duration-200`}
       >
         {dishes.map((dish) => (
-          <Dish
-            key={dish._id}
-            dish={dish}
-            isLoading={isLoading}
-            isInCart={isItemInCart(dish._id)}
-            onAddToCart={handleAddToCart}
-            onEditClick={handleEditClick}
-            onDeleteClick={handleDeleteDish}
-          />
+            <Dish
+              key={dish._id}
+              dish={dish}
+              isLoading={isLoading}
+              isInCart={isItemInCart(dish._id)}
+              onAddToCart={handleAddToCart}
+              onEditClick={handleEditClick}
+              onDeleteClick={handleDeleteDish}
+            />
         ))}
       </div>
 

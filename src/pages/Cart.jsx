@@ -60,22 +60,25 @@ const Cart = () => {
   };
 
   const calculateSubtotal = () => {
-    return cartItems.reduce(
-      (total, item) => total + item.dish.price * item.quantity,
-      0
-    );
+    return cartItems.reduce((total, item) => {
+      if (item.dish.inStock) {
+        return total + item.dish.price * item.quantity;
+      }
+      return total;
+    }, 0);
   };
-
+  
   const subtotal = calculateSubtotal();
-  const deliveryFee = subtotal > 499 ? 0 : 40;
+  // Only apply delivery fee if subtotal is greater than 0
+  const deliveryFee = subtotal > 0 ? (subtotal > 499 ? 0 : 40) : 0;
   const total = subtotal + deliveryFee;
 
-  useEffect(()=>{
+  useEffect(() => {
     scroll({
       top: 0,
-      behavior: "smooth"
-    })
-  },[])
+      behavior: "smooth",
+    });
+  }, []);
 
   return (
     <div className="min-h-screen px-20 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900">
@@ -121,8 +124,10 @@ const Cart = () => {
                     item.dish && (
                       <div
                         key={item._id}
-                        className="bg-gray-800/50 backdrop-blur-sm rounded-xl overflow-hidden border border-gray-700/50 
-                        hover:border-purple-500/50 transition-all duration-300 group"
+                        className={`bg-gray-800/50 backdrop-blur-sm rounded-xl overflow-hidden border border-gray-700/50 
+          hover:border-purple-500/50 transition-all duration-300 group ${
+            !item.dish.inStock ? "opacity-50 " : ""
+          }`}
                       >
                         <div className="p-4 flex gap-4">
                           <div className="w-32 h-24 rounded-lg overflow-hidden flex-shrink-0">
@@ -146,7 +151,6 @@ const Cart = () => {
                                 </p>
                               </div>
                               <span className="text-lg font-bold text-purple-400 ml-4">
-                                {/* ₹{item.dish.price} */}
                                 ₹{item.dish.price * item.quantity}
                               </span>
                             </div>
@@ -157,8 +161,8 @@ const Cart = () => {
                                   onClick={() =>
                                     handleUpdateQuantity(item._id, -1)
                                   }
-                                  disabled={loading}
-                                  className="p-2 text-gray-400 hover:text-white hover:bg-gray-600/50 rounded-lg transition-colors"
+                                  disabled={!item.dish.inStock || loading}
+                                  className="p-2 text-gray-400 hover:text-white hover:bg-gray-600/50 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
                                   {item.quantity === 1 ? (
                                     <Trash2 className="h-4 w-4" />
@@ -173,17 +177,23 @@ const Cart = () => {
                                   onClick={() =>
                                     handleUpdateQuantity(item._id, 1)
                                   }
-                                  disabled={loading}
-                                  className="p-2 text-gray-400 hover:text-white hover:bg-gray-600/50 rounded-lg transition-colors"
+                                  disabled={!item.dish.inStock || loading}
+                                  className="p-2 text-gray-400 hover:text-white hover:bg-gray-600/50 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
                                   <Plus className="h-4 w-4" />
                                 </button>
                               </div>
 
+                              {!item.dish.inStock && (
+                                <span className="text-sm text-red-400">
+                                  Out of Stock
+                                </span>
+                              )}
+
                               <button
                                 onClick={() => handleRemoveItem(item._id)}
                                 disabled={loading}
-                                className="text-sm text-gray-400 hover:text-red-400 transition-colors"
+                                className="text-sm text-white hover:text-red-400 transition-colors opacity-100 disabled:opacity-50 disabled:cursor-not-allowed"
                               >
                                 Remove
                               </button>

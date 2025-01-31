@@ -29,7 +29,7 @@ const CounterCard = ({ counter, onClick, onEdit }) => {
           <img
             src={counter.image || DEFAULT_IMG_PATH}
             alt={counter.name}
-            className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500"
+            className="w-full h-full object-cover transform group-hover:blur-xs group-hover:scale-105 transition-transform duration-500"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/40 to-transparent" />
         </div>

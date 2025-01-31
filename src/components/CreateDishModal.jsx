@@ -6,7 +6,7 @@ const CreateDishModal = ({ onSave, onClose, isOpen }) => {
     name: "",
     description: "",
     price: 0,
-    category: "",
+    category: "veg",
     image: "",
     inStock: true,
   });
@@ -33,7 +33,7 @@ const CreateDishModal = ({ onSave, onClose, isOpen }) => {
         name: "",
         description: "",
         price: 0,
-        category: "",
+        category: "veg",
         image: "",
         inStock: true,
       });
@@ -54,8 +54,8 @@ const CreateDishModal = ({ onSave, onClose, isOpen }) => {
     const newErrors = {};
     if (!formData.name.trim()) newErrors.name = "Name is required";
     if (formData.price <= 0) newErrors.price = "Price must be greater than 0";
-    if (!formData.category) newErrors.category = "Category is required";
-    if (!formData.image.trim()) newErrors.image = "Image URL is required";
+    // if (!formData.category) newErrors.category = "Category is required";
+    // if (!formData.image.trim()) newErrors.image = "Image URL is required";
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };

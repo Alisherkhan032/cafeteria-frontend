@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setCounter, setLoading, updateConter } from "@/slices/counterSlice";
+import { setCounter, setLoading, updateCounter } from "@/slices/counterSlice";
 import { API_BASE_URL } from "@/utils/apiConfigs";
 import { selectCounters, setCurrentCounter } from "@/slices/counterSlice";
 import { Store, Clock, Users, ChefHat } from "lucide-react";

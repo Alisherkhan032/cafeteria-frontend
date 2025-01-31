@@ -1,13 +1,13 @@
+// CreateCounterModal.jsx
 import React, { useState, useEffect } from "react";
 import { X, Save, Search } from "lucide-react";
 
-const EditCounterModal = ({ counter, onSave, onClose, isOpen, merchants }) => {
+const CreateCounterModal = ({ onSave, onClose, isOpen, merchants }) => {
   const [formData, setFormData] = useState({
-    id: "",
     name: "",
     description: "",
     image: "",
-    merchants: [],
+    merchants: []
   });
 
   const [searchQuery, setSearchQuery] = useState("");
@@ -25,41 +25,25 @@ const EditCounterModal = ({ counter, onSave, onClose, isOpen, merchants }) => {
     };
   }, [isOpen]);
 
-  useEffect(() => {
-    if (counter) {
-      setFormData({
-        id: counter._id,
-        name: counter.name,
-        description: counter.description,
-        image: counter.image,
-        merchants: counter.merchant.map((m) => m._id),
-      });
-    }
-  }, [counter]);
-
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
   const handleMerchantToggle = (merchantId) => {
-    setFormData((prev) => {
-      // If merchant is already selected and trying to unselect
+    setFormData(prev => {
       if (prev.merchants.includes(merchantId)) {
-        // Only allow unselect if there will still be at least one merchant remaining
         if (prev.merchants.length > 1) {
-          return {
-            ...prev,
-            merchants: prev.merchants.filter((id) => id !== merchantId),
+          return { 
+            ...prev, 
+            merchants: prev.merchants.filter(id => id !== merchantId)
           };
         }
-        // If trying to remove the last merchant, return unchanged state
         return prev;
       }
-      // Adding a new merchant
-      return {
-        ...prev,
-        merchants: [...prev.merchants, merchantId],
+      return { 
+        ...prev, 
+        merchants: [...prev.merchants, merchantId]
       };
     });
   };
@@ -67,8 +51,7 @@ const EditCounterModal = ({ counter, onSave, onClose, isOpen, merchants }) => {
   const validateForm = () => {
     const newErrors = {};
     if (!formData.name.trim()) newErrors.name = "Name is required";
-    if (formData.merchants.length === 0)
-      newErrors.merchants = "Select at least one merchant";
+    if (formData.merchants.length === 0) newErrors.merchants = "Select at least one merchant";
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -76,18 +59,23 @@ const EditCounterModal = ({ counter, onSave, onClose, isOpen, merchants }) => {
   const handleSave = () => {
     if (!validateForm()) return;
     onSave(formData);
+    // Reset form
+    setFormData({
+      name: "",
+      description: "",
+      image: "",
+      merchants: []
+    });
     onClose();
   };
 
-  const filteredMerchants = merchants.filter((merchant) =>
+  const canUnselect = (merchantId) => {
+    return formData.merchants.length > 1 || !formData.merchants.includes(merchantId);
+  };
+
+  const filteredMerchants = merchants.filter(merchant =>
     merchant.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
-
-  const canUnselect = (merchantId) => {
-    return (
-      formData.merchants.length > 1 || !formData.merchants.includes(merchantId)
-    );
-  };
 
   if (!isOpen) return null;
 
@@ -98,7 +86,7 @@ const EditCounterModal = ({ counter, onSave, onClose, isOpen, merchants }) => {
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between p-4 border-b border-gray-700">
-          <h2 className="text-xl font-semibold text-white">Edit Counter</h2>
+          <h2 className="text-xl font-semibold text-white">Create Counter</h2>
           <button
             onClick={onClose}
             className="p-2 hover:bg-gray-700 rounded-lg transition-colors"
@@ -168,33 +156,31 @@ const EditCounterModal = ({ counter, onSave, onClose, isOpen, merchants }) => {
                 <Search className="h-4 w-4 text-gray-400 absolute left-2 top-2.5" />
               </div>
             </div>
-
+            
             <div className="space-y-2 max-h-48 overflow-y-auto">
               {filteredMerchants.length === 0 ? (
                 <p className="text-gray-400 text-sm py-2 text-center">
                   No merchants found
                 </p>
               ) : (
-                filteredMerchants.map((merchant) => (
+                filteredMerchants.map(merchant => (
                   <label
                     key={merchant._id}
                     className={`flex items-center space-x-3 bg-gray-700/50 p-3 rounded-lg transition-colors cursor-pointer
-    ${!canUnselect(merchant._id) ? "opacity-75" : "hover:bg-gray-700"}`}
+                      ${!canUnselect(merchant._id) ? 'opacity-75' : 'hover:bg-gray-700'}`}
                   >
                     <input
                       type="checkbox"
                       checked={formData.merchants.includes(merchant._id)}
                       onChange={() => handleMerchantToggle(merchant._id)}
                       className={`h-4 w-4 text-purple-500 rounded border-gray-600 focus:ring-purple-500 bg-gray-800
-      ${!canUnselect(merchant._id) ? "cursor-not-allowed" : "cursor-pointer"}`}
+                        ${!canUnselect(merchant._id) ? 'cursor-not-allowed' : 'cursor-pointer'}`}
                     />
                     <span className="text-gray-200 text-sm">
                       {merchant.name}
-                      {!canUnselect(merchant._id) && (
-                        <span className="text-gray-400 text-xs ml-2">
-                          (Required)
-                        </span>
-                      )}
+                      {!canUnselect(merchant._id) && 
+                        <span className="text-gray-400 text-xs ml-2">(Required)</span>
+                      }
                     </span>
                   </label>
                 ))
@@ -218,7 +204,7 @@ const EditCounterModal = ({ counter, onSave, onClose, isOpen, merchants }) => {
             className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg flex items-center gap-2 transition-colors"
           >
             <Save className="h-4 w-4" />
-            Save Changes
+            Create Counter
           </button>
         </div>
       </div>
@@ -226,4 +212,4 @@ const EditCounterModal = ({ counter, onSave, onClose, isOpen, merchants }) => {
   );
 };
 
-export default EditCounterModal;
+export default CreateCounterModal;
