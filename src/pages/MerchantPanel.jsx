@@ -2,20 +2,18 @@ import React, { useEffect, useState } from "react";
 import {
   setLoading,
   selectloadingState,
-  updateConter,
   setCurrentCounter,
 } from "@/slices/counterSlice";
 import {
   selectCurrentUser,
   setMerchantCounters,
   selectMerchantCounters,
+  updateMerchantCounter
 } from "@/slices/authSlice";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { API_BASE_URL } from "@/utils/apiConfigs";
 import { CounterSkeleton } from "@/utils/skeletonConfig";
-import { Pencil } from "lucide-react";
-import EditCounterModal from "@/components/EditCounterModal";
 import { useNavigate } from "react-router-dom";
 
 const MerchantPanel = () => {
@@ -24,35 +22,6 @@ const MerchantPanel = () => {
   const loading = useSelector(selectloadingState);
   const merchant = useSelector(selectCurrentUser);
   const merchantCounters = useSelector(selectMerchantCounters);
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [selectedCounter, setSelectedCounter] = useState(null);
-
-  const handleEditClick = (counter) => {
-    setSelectedCounter(counter); // Set the selected counter
-    setIsEditModalOpen(true); // Open the modal
-  };
-
-  const handleSave = (updatedCounter) => {
-    handleEditCounter(updatedCounter); // Save the updated counter
-    setIsEditModalOpen(false); // Close the modal
-  };
-
-  const handleEditCounter = async (updatedData) => {
-    try {
-      dispatch(setLoading(true));
-      const response = await axios.put(
-        `${API_BASE_URL}/counters/${updatedData.id}`,
-        updatedData
-      );
-      const updatedCounter = response.data.counter;
-      dispatch(updateConter(updatedCounter));
-    } catch (error) {
-      console.error("Error updating counter:", error);
-      // TODO: Add toast notification
-    } finally {
-      dispatch(setLoading(false));
-    }
-  };
 
   const CountersOfMerchants = async () => {
     try {
@@ -81,7 +50,7 @@ const MerchantPanel = () => {
   return (
     <>
       {/* Main content container */}
-      <div className="px-20 py-10 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900">
+      <div className="px-20 py-10 min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900">
         {loading ? (
           <div className="">
             {Array.from(new Array(6)).map((_, index) => (
@@ -95,7 +64,7 @@ const MerchantPanel = () => {
                 key={counter._id}
                 onClick={() => handleCounterClick(counter)}
                 className="relative flex items-center bg-gray-800/50 backdrop-blur-sm rounded-xl overflow-hidden border border-gray-700/50 
-                hover:border-purple-500/50 transition-all duration-300 cursor-pointer p-4"
+                hover:border-purple-500/50 transition-all group duration-300 cursor-pointer p-4"
               >
                 {/* Image Section */}
                 <div className="w-24 h-24 flex-shrink-0 relative">
@@ -126,17 +95,6 @@ const MerchantPanel = () => {
                     {counter.description}
                   </p>
                 </div>
-
-                {/* Edit Button */}
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleEditClick(counter);
-                  }}
-                  className="bg-gray-900/60 backdrop-blur-sm p-2 rounded-lg hover:bg-gray-800 transition-colors self-start"
-                >
-                  <Pencil className="h-4 w-4 text-white" />
-                </button>
               </div>
             ))}
           </div>
@@ -149,15 +107,6 @@ const MerchantPanel = () => {
         )}
       </div>
 
-      {/* Modal Portal */}
-      {selectedCounter && (
-        <EditCounterModal
-          counter={selectedCounter}
-          isOpen={isEditModalOpen}
-          onSave={handleSave}
-          onClose={() => setIsEditModalOpen(false)}
-        />
-      )}
     </>
   );
 };
