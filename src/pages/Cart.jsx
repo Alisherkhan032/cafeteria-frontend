@@ -35,7 +35,7 @@ const Cart = () => {
   const handleRemoveItem = async (itemId) => {
     try {
       dispatch(setLoading(true));
-      const responseData = await makeApiCall('delete', `/cart/${itemId}`)
+      const responseData = await makeApiCall("delete", `/cart/${itemId}`);
       const updatedCart = responseData.cart;
       dispatch(setCart(updatedCart));
     } catch (error) {
@@ -48,7 +48,9 @@ const Cart = () => {
   const handleUpdateQuantity = async (itemId, increment) => {
     try {
       dispatch(setLoading(true));
-      const responseData = await makeApiCall('patch', `/cart/${itemId}`, { increment: increment })
+      const responseData = await makeApiCall("patch", `/cart/${itemId}`, {
+        increment: increment,
+      });
       const updatedCart = responseData.cart;
       dispatch(setCart(updatedCart));
     } catch (error) {
@@ -58,6 +60,19 @@ const Cart = () => {
     }
   };
 
+  const handleClearCart = async () => {
+    try {
+      dispatch(setLoading(true));
+      const responseData = await makeApiCall("delete", `/cart`);
+      const updatedCart = responseData.cart;
+      dispatch(setCart(updatedCart));
+    } catch (error) {
+      console.log("Error in clearing cart", error.message);
+    } finally {
+      dispatch(setLoading(false));
+    }
+  }
+
   const calculateSubtotal = () => {
     return cartItems.reduce((total, item) => {
       if (item.dish.inStock) {
@@ -66,7 +81,7 @@ const Cart = () => {
       return total;
     }, 0);
   };
-  
+
   const subtotal = calculateSubtotal();
   // Only apply delivery fee if subtotal is greater than 0
   const deliveryFee = subtotal > 0 ? (subtotal > 499 ? 0 : 40) : 0;
@@ -89,6 +104,13 @@ const Cart = () => {
             <div>
               <h2 className="text-3xl font-bold text-white mb-2">Your Cart</h2>
               <p className="text-gray-400">Review and checkout your items</p>
+             {!cartItems.length==0 &&  <button
+                className={`flex items-center gap-2 px-4 py-2 mt-3 cursor-pointer rounded-md transition bg-red-500 text-white hover:bg-red-600`}
+                onClick={handleClearCart}
+              >
+                <Trash2 size={20} />
+                Clear Cart
+              </button>}
             </div>
             <button
               className="px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-xl
@@ -131,9 +153,7 @@ const Cart = () => {
                         <div className="p-4 flex gap-4">
                           <div className="w-32 h-24 rounded-lg overflow-hidden flex-shrink-0">
                             <img
-                              src={
-                                item.dish.image || DEFAULT_DISH_PATH
-                              }
+                              src={item.dish.image || DEFAULT_DISH_PATH}
                               alt={item.dish.name}
                               className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500"
                             />
@@ -243,10 +263,10 @@ const Cart = () => {
   );
 };
 
-export default function Wrapper(){
+export default function Wrapper() {
   return (
     <NavbarLayout>
       <Cart />
     </NavbarLayout>
-  )
+  );
 }
