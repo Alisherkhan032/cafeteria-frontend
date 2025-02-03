@@ -13,6 +13,7 @@ import {
 import playstorePng from "../../public/playstore.png";
 import appstorePng from "../../public/appstore.png";
 import { signatureDishes, testimonials } from "@/utils/landingpageConfigs";
+import NavbarLayout from "@/components/NavbarLayout";
 
 const LandingPage = () => {
   return (
@@ -299,4 +300,10 @@ const LandingPage = () => {
   );
 };
 
-export default LandingPage;
+export default function Wrapper(){
+  return (
+    <NavbarLayout>
+      <LandingPage />
+    </NavbarLayout>
+  )
+}

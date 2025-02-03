@@ -79,7 +79,7 @@ const EditCounterModal = ({ counter, onSave, onClose, isOpen, merchants }) => {
     onClose();
   };
 
-  const filteredMerchants = merchants.filter((merchant) =>
+  const filteredMerchants = merchants && merchants.filter((merchant) =>
     merchant.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
@@ -170,12 +170,12 @@ const EditCounterModal = ({ counter, onSave, onClose, isOpen, merchants }) => {
             </div>
 
             <div className="space-y-2 max-h-48 overflow-y-auto">
-              {filteredMerchants.length === 0 ? (
+              {filteredMerchants && filteredMerchants.length === 0 ? (
                 <p className="text-gray-400 text-sm py-2 text-center">
                   No merchants found
                 </p>
               ) : (
-                filteredMerchants.map((merchant) => (
+                filteredMerchants && filteredMerchants.map((merchant) => (
                   <label
                     key={merchant._id}
                     className={`flex items-center space-x-3 bg-gray-700/50 p-3 rounded-lg transition-colors cursor-pointer

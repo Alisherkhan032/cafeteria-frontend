@@ -9,6 +9,7 @@ import {
   Button,
   Typography,
 } from "@mui/material";
+import { DEFAULT_DISH_PATH } from "@/utils/constants";
 
 const DishCard = ({
   dish,
@@ -39,7 +40,7 @@ const DishCard = ({
       >
         <div className="aspect-video relative overflow-hidden flex-shrink-0">
           <img
-            src={dish.image || "/api/placeholder/400/300"}
+            src={dish.image || DEFAULT_DISH_PATH}
             alt={dish.name}
             className="w-full h-full object-cover transform group-hover:scale-105  transition-transform duration-500"
           />
@@ -49,7 +50,8 @@ const DishCard = ({
         {/* Content Section */}
         <div className="p-6 flex flex-col flex-grow">
           <div className="flex justify-between items-start mb-4">
-            <div className="flex-1">
+            {/* Ensure this flex child can shrink properly */}
+            <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-2">
                 <h3 className="text-xl font-bold text-white">{dish.name}</h3>
                 {dish.category && (
@@ -68,11 +70,13 @@ const DishCard = ({
                   </span>
                 )}
               </div>
-              <p className="text-gray-400 text-sm line-clamp-2">
+              {/* Force breaking of long words */}
+              <p className="break-words text-gray-400 text-sm line-clamp-2">
                 {dish.description}
               </p>
             </div>
-            <span className="text-lg font-bold text-purple-400 ml-4">
+            {/* Prevent price from shrinking/moving */}
+            <span className="flex-shrink-0 text-lg font-bold text-purple-400 ml-4">
               ₹{dish.price}
             </span>
           </div>
