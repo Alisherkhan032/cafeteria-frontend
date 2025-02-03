@@ -17,7 +17,7 @@ import axios from "axios";
 import { AUTH_BASE_URL, API_BASE_URL } from "@/utils/apiConfigs";
 import { makeApiCall } from "@/services/makeApiCall";
 import { setCart } from "@/slices/cartSlice";
-import { ArrowLeft, UtensilsCrossed } from "lucide-react";
+import { ArrowLeft, Eye, EyeOff, UtensilsCrossed } from "lucide-react";
 
 export function Auth() {
   const user = useSelector(selectCurrentUser);
@@ -35,6 +35,7 @@ export function Login() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const nextPage = location.state?.from || "/";
@@ -65,7 +66,7 @@ export function Login() {
 
   return (
     <div className="min-h-screen py-4 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900">
-      <Link to='/'>
+      <Link to="/">
         <div className="flex items-center space-x-1  ml-2 cursor-pointer">
           <ArrowLeft className="text-yellow-400" size={28} />
           <div className="text-white text-2xl font-bold whitespace-nowrap">
@@ -101,12 +102,21 @@ export function Login() {
 
             <div>
               <label className="block text-gray-300 mb-2">Password</label>
-              <input
-                type="password"
-                className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
+              <div className="relative w-full h-full px-2 py-1   flex items-center bg-gray-800 border border-gray-700 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <input
+                  type={isPasswordVisible ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full h-full py-2 focus:outline-none"
+                />
+                <button
+                  type="button"
+                  onClick={() => setIsPasswordVisible(!isPasswordVisible)}
+                  className="absolute right-2"
+                >
+                  {isPasswordVisible ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
+              </div>
             </div>
           </div>
 
@@ -146,11 +156,14 @@ export function Register() {
   const [password2, setPassword2] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
   const handleRegister = async (e) => {
     e.preventDefault();
     setError("");
     setSuccess("");
+    setLoading(true);
     if (password !== password2) {
       setError("Password mismatch!!");
       return;
@@ -167,12 +180,14 @@ export function Register() {
       console.log(err);
       const errMessage = err.response?.data?.message || "Something went wrong";
       setError(errMessage);
+    } finally {
+      setLoading(true);
     }
   };
 
   return (
     <div className="min-h-screen py-4 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900">
-      <Link to='/'>
+      <Link to="/">
         <div className="flex items-center space-x-1   ml-2 cursor-pointer">
           <ArrowLeft className="text-yellow-400" size={28} />
           <div className="text-white text-2xl font-bold whitespace-nowrap">
@@ -218,12 +233,21 @@ export function Register() {
 
             <div>
               <label className="block text-gray-300 mb-2">Password</label>
-              <input
-                type="password"
-                className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
+              <div className="relative w-full h-full px-2 py-1   flex items-center bg-gray-800 border border-gray-700 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <input
+                  type={isPasswordVisible ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full h-full py-2 focus:outline-none"
+                />
+                <button
+                  type="button"
+                  onClick={() => setIsPasswordVisible(!isPasswordVisible)}
+                  className="absolute right-2"
+                >
+                  {isPasswordVisible ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
+              </div>
             </div>
 
             <div>
@@ -253,9 +277,10 @@ export function Register() {
 
           <button
             type="submit"
-            className="w-full mt-6 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md transition duration-200"
+            disabled={loading}
+            className="w-full mt-6 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Register
+            {loading ? "Loading..." : "Register"}
           </button>
         </form>
 

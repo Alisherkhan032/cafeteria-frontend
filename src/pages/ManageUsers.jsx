@@ -9,11 +9,21 @@ import {
   X,
   Eye,
   EyeOff,
+  Loader2,
 } from "lucide-react";
 import toast, { Toaster } from "react-hot-toast";
 import NavbarLayout from "@/components/NavbarLayout";
 import { makeApiCall } from "@/services/makeApiCall";
 import { CounterSkeleton } from "@/utils/skeletonConfig";
+
+const LoadingOverlay = () => (
+  <div className="fixed inset-0 h-screen bg-gray-900/50 backdrop-blur-xs z-50 flex items-center justify-center">
+    <div className="bg-gray-800 rounded-lg p-4 flex items-center gap-3">
+      <Loader2 className="h-6 w-6 text-purple-500 animate-spin" />
+      <span className="text-gray-200">Processing...</span>
+    </div>
+  </div>
+);
 
 const ManageUsers = () => {
   const dispatch = useDispatch();
@@ -81,6 +91,7 @@ const ManageUsers = () => {
 
   const handleRoleChangeForUser = async (userId, newRole) => {
     try {
+      setLoading(true);
       await makeApiCall("patch", `/users/${userId}`, { role: newRole });
       fetchUsers(); // Refresh the list after successful update
     } catch (error) {
@@ -93,11 +104,15 @@ const ManageUsers = () => {
         alert("Something went wrong. Please try again.");
       }
     }
+    finally {
+      setLoading(false);
+    }
   };
   
 
   const handleAddUser = async () => {
     try {
+      setLoading(true);
       // await axios.post(`${AUTH_BASE_URL}/register`, newUser);
       await makeApiCall("post", "/register", newUser);
       setShowAddModal(false);
@@ -107,6 +122,7 @@ const ManageUsers = () => {
       console.error("Error adding user:", error);
       toast.error(error.responseData?.message || "Failed to create User");
     } finally {
+      setLoading(false);
       setNewUser({
         name: "",
         email: "",
@@ -116,20 +132,12 @@ const ManageUsers = () => {
     }
   };
 
-  if (loading) {
-    return (
-      <div className="px-8 min-h-screen py-6 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900">
-        <CounterSkeleton />
-        <CounterSkeleton />
-        <CounterSkeleton />
-      </div>
-    );
-  }
 
   return (
     <div className="px-8 min-h-screen py-6 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900">
       {/* Filters Section */}
       <Toaster position="top-right" />
+      {loading && <LoadingOverlay />}
       <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
         <h1 className="text-2xl font-bold text-white">User Management</h1>
 
