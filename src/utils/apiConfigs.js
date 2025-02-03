@@ -1,9 +1,9 @@
-export const API_BASE_URL = 'http://localhost:5001/api/v1';
-// export const API_BASE_URL = 'https://urban-eat.onrender.com/api/v1';
+// export const API_BASE_URL = 'http://localhost:5001/api/v1';
+export const API_BASE_URL = 'https://urban-eat.onrender.com/api/v1';
 import axios from "axios";
 
-export const AUTH_BASE_URL = 'http://localhost:5001/api/v1/auth';
-// export const AUTH_BASE_URL = 'https://urban-eat.onrender.com/api/v1/auth';
+// export const AUTH_BASE_URL = 'http://localhost:5001/api/v1/auth';
+export const AUTH_BASE_URL = 'https://urban-eat.onrender.com/api/v1/auth';
 
 function axiosAuthConfig(method, url, body) {
     const token = localStorage.getItem('token');
