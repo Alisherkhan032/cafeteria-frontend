@@ -17,7 +17,7 @@ import axios from "axios";
 import { AUTH_BASE_URL, API_BASE_URL } from "@/utils/apiConfigs";
 import { makeApiCall } from "@/services/makeApiCall";
 import { setCart } from "@/slices/cartSlice";
-
+import { UtensilsCrossed } from "lucide-react";
 
 export function Auth() {
   const user = useSelector(selectCurrentUser);
@@ -50,7 +50,7 @@ export function Login() {
       });
       const { token } = response.data;
       localStorage.setItem("token", token);
-      const responseData = await makeApiCall("get", "/cart")
+      const responseData = await makeApiCall("get", "/cart");
       dispatch(setCurrentUser(responseData.user));
       dispatch(setCart(responseData.cart));
       navigate(nextPage, { replace: true });
@@ -65,6 +65,12 @@ export function Login() {
 
   return (
     <div className="min-h-screen py-12 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900">
+      <div className="flex items-center space-x-3 justify-center mb-4">
+        <UtensilsCrossed className="text-yellow-400" size={28} />
+        <div className="text-white text-2xl font-bold whitespace-nowrap">
+          Urban-Eats
+        </div>
+      </div>
       <div className="max-w-md mx-auto px-4">
         <form
           onSubmit={handleLogin}
@@ -157,7 +163,13 @@ export function Register() {
   };
 
   return (
-    <div className="min-h-screen py-12 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900">
+    <div className="min-h-screen py-10 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900">
+      <div className="flex items-center space-x-3 justify-center mb-4">
+        <UtensilsCrossed className="text-yellow-400" size={28} />
+        <div className="text-white text-2xl font-bold whitespace-nowrap">
+          Urban-Eats
+        </div>
+      </div>
       <div className="max-w-md mx-auto px-4">
         <form
           onSubmit={handleRegister}
