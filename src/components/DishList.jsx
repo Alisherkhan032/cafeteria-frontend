@@ -9,6 +9,8 @@ import Dish from "./DishCard";
 import EditDishModal from "./EditDishModal ";
 import CreateDishModal from "./CreateDishModal";
 import { makeApiCall } from "@/services/makeApiCall";
+import { selectCurrentUser } from "@/slices/authSlice";
+import { ROLES } from "@/utils/constants";
 
 const LoadingOverlay = () => (
   <div className="fixed inset-0 bg-gray-900/50 backdrop-blur-sm z-50 flex items-center justify-center">
@@ -19,13 +21,13 @@ const LoadingOverlay = () => (
   </div>
 );
 
-const MenuHeader = ({ onAddDish, isLoading }) => (
+const MenuHeader = ({ onAddDish, isLoading, user }) => (
   <div className="flex justify-between items-center mb-8">
     <div>
       <h2 className="text-3xl font-bold text-white mb-2">Menu</h2>
       <p className="text-gray-400">Explore our delicious dishes</p>
     </div>
-    <button
+    {user && user.role === ROLES.MERCHANT &&<button
       className="px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-xl
         flex items-center gap-2 transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed
         shadow-lg shadow-purple-600/20"
@@ -34,7 +36,7 @@ const MenuHeader = ({ onAddDish, isLoading }) => (
     >
       <PlusCircle className="h-5 w-5" />
       Add Dish
-    </button>
+    </button>}
   </div>
 );
 
@@ -53,6 +55,7 @@ const EmptyState = () => (
 const DishList = ({ dishes, counterId }) => {
   const dispatch = useDispatch();
   const totalItemsInCart = useSelector(selectItemsFromCart);
+  const user = useSelector(selectCurrentUser);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedDish, setSelectedDish] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -139,7 +142,7 @@ const DishList = ({ dishes, counterId }) => {
     <div className="relative">
       {isLoading && <LoadingOverlay />}
       <Toaster />
-      <MenuHeader onAddDish={() => setShowCreateModal(true)} isLoading={isLoading} />
+      <MenuHeader user = {user} onAddDish={() => setShowCreateModal(true)} isLoading={isLoading} />
 
       <div className="relative">
         <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-blue-500/10 rounded-xl blur-3xl"></div>

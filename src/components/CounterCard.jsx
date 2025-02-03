@@ -41,12 +41,12 @@ const CounterCard = ({ counter, onClick, onEdit }) => {
             <div className="bg-gray-900/60 backdrop-blur-sm px-3 py-1.5 rounded-lg">
               <Store className="h-5 w-5 text-purple-400" />
             </div>
-            <button
+            {/* <button
               onClick={handleEditClick}
               className="bg-gray-900/60 backdrop-blur-sm p-2 rounded-lg hover:bg-gray-800 transition-colors"
             >
               <Pencil className="h-4 w-4 text-white" />
-            </button>
+            </button> */}
           </div>
 
           {/* Bottom Section */}
