@@ -14,8 +14,9 @@ import {
   ShoppingBag,
   ArrowRight,
 } from "lucide-react";
-import axios from "axios";
-import { API_BASE_URL } from "@/utils/apiConfigs";
+import NavbarLayout from "@/components/NavbarLayout";
+import { makeApiCall } from "@/services/makeApiCall";
+import { DEFAULT_DISH_PATH } from "@/utils/constants";
 
 const LoadingOverlay = () => (
   <div className="fixed inset-0 bg-gray-900/50 backdrop-blur-xs z-50 flex items-center justify-center">
@@ -34,8 +35,8 @@ const Cart = () => {
   const handleRemoveItem = async (itemId) => {
     try {
       dispatch(setLoading(true));
-      const response = await axios.delete(`${API_BASE_URL}/cart/${itemId}`);
-      const updatedCart = response.data.cart;
+      const responseData = await makeApiCall('delete', `/cart/${itemId}`)
+      const updatedCart = responseData.cart;
       dispatch(setCart(updatedCart));
     } catch (error) {
       console.log("Error in deleting item quantity", error.message);
@@ -47,10 +48,8 @@ const Cart = () => {
   const handleUpdateQuantity = async (itemId, increment) => {
     try {
       dispatch(setLoading(true));
-      const response = await axios.patch(`${API_BASE_URL}/cart/${itemId}`, {
-        increment: increment,
-      });
-      const updatedCart = response.data.cart;
+      const responseData = await makeApiCall('patch', `/cart/${itemId}`, { increment: increment })
+      const updatedCart = responseData.cart;
       dispatch(setCart(updatedCart));
     } catch (error) {
       console.log("Error in updating quantity", error.message);
@@ -126,14 +125,14 @@ const Cart = () => {
                         key={item._id}
                         className={`bg-gray-800/50 backdrop-blur-sm rounded-xl overflow-hidden border border-gray-700/50 
           hover:border-purple-500/50 transition-all duration-300 group ${
-            !item.dish.inStock ? "opacity-50 " : ""
+            !item.dish.inStock ? "opacity-30 " : ""
           }`}
                       >
                         <div className="p-4 flex gap-4">
                           <div className="w-32 h-24 rounded-lg overflow-hidden flex-shrink-0">
                             <img
                               src={
-                                item.dish.image || "/api/placeholder/400/300"
+                                item.dish.image || DEFAULT_DISH_PATH
                               }
                               alt={item.dish.name}
                               className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500"
@@ -185,7 +184,7 @@ const Cart = () => {
                               </div>
 
                               {!item.dish.inStock && (
-                                <span className="text-sm text-red-400">
+                                <span className="text-lg font-medium opacity-100 text-red-400">
                                   Out of Stock
                                 </span>
                               )}
@@ -193,7 +192,7 @@ const Cart = () => {
                               <button
                                 onClick={() => handleRemoveItem(item._id)}
                                 disabled={loading}
-                                className="text-sm text-white hover:text-red-400 transition-colors opacity-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="text-sm text-white hover:text-red-400 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                               >
                                 Remove
                               </button>
@@ -244,4 +243,10 @@ const Cart = () => {
   );
 };
 
-export default Cart;
+export default function Wrapper(){
+  return (
+    <NavbarLayout>
+      <Cart />
+    </NavbarLayout>
+  )
+}

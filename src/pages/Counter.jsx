@@ -9,10 +9,10 @@ import {
   setCurrentCounter
 } from "@/slices/counterSlice";
 import { useParams } from "react-router-dom";
-import { API_BASE_URL } from "@/utils/apiConfigs";
 import { Store, ChefHat } from 'lucide-react';
-import axios from "axios";
 import DishList from "@/components/DishList";
+import { makeApiCall } from "@/services/makeApiCall";
+import NavbarLayout from "@/components/NavbarLayout";
 
 const CounterSkeleton = () => (
   <div className="w-full mb-6 animate-pulse">
@@ -33,10 +33,8 @@ const Counter = () => {
   const fetchDishes = async () => {
     try {
       dispatch(setLoading(true));
-      const response = await axios.get(
-        `${API_BASE_URL}/dishes/counter/${counterId}`
-      );
-      const { dishes } = response.data;
+      const responseData = await makeApiCall("get", `/dishes/counter/${counterId}`);
+      const { dishes } = responseData;
       dispatch(setDishes(dishes));
     } catch (error) {
       console.error("Error fetching dishes:", error.message);
@@ -48,9 +46,9 @@ const Counter = () => {
   const fetchCounter = async () => {
     try {
       dispatch(setLoading(true));
-      const response = await axios.get(`${API_BASE_URL}/counters/${counterId}`);
-      const currentCounter = response.data;
-      dispatch(setCurrentCounter(currentCounter));
+      const responseData = await makeApiCall("get", `/counters/${counterId}`);
+      const currentCounter = responseData;
+      dispatch(setCurrentCounter(currentCounter))  ; 
     } catch (error) {
       console.error("Error fetching counter:", error.message);
     } finally {
@@ -73,7 +71,7 @@ const Counter = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-16">
         {loading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {Array.from(new Array(6)).map((_, index) => (
+            {Array.from(new Array(3)).map((_, index) => (
               <CounterSkeleton key={index} />
             ))}
           </div>
@@ -84,29 +82,11 @@ const Counter = () => {
                 <Store className="h-8 w-8 text-purple-500" />
               </div>
               <h1 className="text-4xl font-bold text-white mb-4">
-                {counterName}
+                Welcome to : {counterName}
               </h1>
               <div className="h-1 w-20 bg-purple-500 mx-auto rounded-full"></div>
             </div>
-
-            {dishes && dishes.length > 0 ? (
-              <div className="relative">
-                <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-blue-500/10 rounded-xl blur-3xl"></div>
-                <div className="relative">
-                  <DishList dishes={dishes} counterId={counterId} />
-                </div>
-              </div>
-            ) : (
-              <div className="text-center py-16 bg-gray-800/50 rounded-xl backdrop-blur-sm">
-                <ChefHat className="h-16 w-16 text-gray-600 mx-auto mb-4" />
-                <p className="text-gray-400 text-lg">
-                  No dishes available at this counter yet.
-                </p>
-                <p className="text-gray-500 mt-2">
-                  Please check back later for updates.
-                </p>
-              </div>
-            )}
+            <DishList dishes={dishes} counterId={counterId} />
           </>
         )}
       </div>
@@ -114,4 +94,10 @@ const Counter = () => {
   );
 };
 
-export default Counter;
+export default function Wrapper(){
+  return (
+    <NavbarLayout>
+      <Counter />
+    </NavbarLayout>
+  )
+}

@@ -3,12 +3,12 @@ import { selectItemsFromCart } from "@/slices/cartSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { updateDish, removeDish, addDish } from "@/slices/counterSlice";
 import { setCart } from "@/slices/cartSlice";
-import { PlusCircle, Loader2 } from "lucide-react";
-import axios from "axios";
-import { API_BASE_URL } from "@/utils/apiConfigs";
+import { PlusCircle, Loader2, ChefHat } from "lucide-react";
+import toast, { Toaster} from "react-hot-toast";
 import Dish from "./DishCard";
 import EditDishModal from "./EditDishModal ";
 import CreateDishModal from "./CreateDishModal";
+import { makeApiCall } from "@/services/makeApiCall";
 
 const LoadingOverlay = () => (
   <div className="fixed inset-0 bg-gray-900/50 backdrop-blur-sm z-50 flex items-center justify-center">
@@ -16,6 +16,37 @@ const LoadingOverlay = () => (
       <Loader2 className="h-6 w-6 text-purple-500 animate-spin" />
       <span className="text-gray-200">Processing...</span>
     </div>
+  </div>
+);
+
+const MenuHeader = ({ onAddDish, isLoading }) => (
+  <div className="flex justify-between items-center mb-8">
+    <div>
+      <h2 className="text-3xl font-bold text-white mb-2">Menu</h2>
+      <p className="text-gray-400">Explore our delicious dishes</p>
+    </div>
+    <button
+      className="px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-xl
+        flex items-center gap-2 transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed
+        shadow-lg shadow-purple-600/20"
+      disabled={isLoading}
+      onClick={onAddDish}
+    >
+      <PlusCircle className="h-5 w-5" />
+      Add Dish
+    </button>
+  </div>
+);
+
+const EmptyState = () => (
+  <div className="text-center py-16 bg-gray-800/50 rounded-xl backdrop-blur-sm">
+    <ChefHat className="h-16 w-16 text-gray-600 mx-auto mb-4" />
+    <p className="text-gray-400 text-lg">
+      No dishes available at this counter yet.
+    </p>
+    <p className="text-gray-500 mt-2">
+      Please check back later for updates.
+    </p>
   </div>
 );
 
@@ -34,11 +65,13 @@ const DishList = ({ dishes, counterId }) => {
   const handleAddToCart = async (dish) => {
     try {
       setIsLoading(true);
-      const dishResponse = await axios.post(`${API_BASE_URL}/cart`, { dish });
-      const updatedCart = dishResponse.data.cart;
+      const dishResponse = await makeApiCall("post", "/cart", { dish });
+      const updatedCart = dishResponse.cart;
       dispatch(setCart(updatedCart));
+      toast.success("Item added to cart");
     } catch (error) {
       console.error("Failed to add item to cart", error);
+      toast.error("Failed to add item to cart");
     } finally {
       setIsLoading(false);
     }
@@ -57,14 +90,13 @@ const DishList = ({ dishes, counterId }) => {
   const handleEditSave = async (updatedDish) => {
     try {
       setIsLoading(true);
-      const response = await axios.patch(
-        `${API_BASE_URL}/dishes/${updatedDish.id}`,
-        updatedDish
-      );
-      const updatedDishFromServer = response.data.dish;
+      const responseData = await makeApiCall('patch', `/dishes/${updatedDish.id}`, updatedDish)
+      const updatedDishFromServer = responseData.dish;
+      toast.success("Dish updated successfully");
       dispatch(updateDish(updatedDishFromServer));
     } catch (error) {
       console.error("Failed to update dish", error);
+      toast.error("Failed to update dish");
     } finally {
       setIsLoading(false);
       setIsModalOpen(false);
@@ -75,11 +107,13 @@ const DishList = ({ dishes, counterId }) => {
   const handleDeleteDish = async (id) => {
     try {
       setIsLoading(true);
-      const response = await axios.delete(`${API_BASE_URL}/dishes/${id}`);
-      const deletedDishFromServer = response.data.dish;
+      const responseData = await makeApiCall('delete', `/dishes/${id}`)
+      const deletedDishFromServer = responseData.dish;
+      toast.success("Dish deleted successfully");
       dispatch(removeDish(deletedDishFromServer));
     } catch (error) {
       console.error("Failed to delete dish", error);
+      toast.error("Failed to delete dish");
     } finally {
       setIsLoading(false);
     }
@@ -88,55 +122,47 @@ const DishList = ({ dishes, counterId }) => {
   const handleCreateDish = async (newDish) => {
     try {
       setIsLoading(true);
-
-      const response = await axios.post(`${API_BASE_URL}/dishes`, {...newDish, counter:counterId});
-      console.log('response', response);
-      const createdDish = response.data.dish;
-      console.log('createdDish', createdDish);
+      const responseData = await makeApiCall('post', '/dishes', {...newDish, counter:counterId})
+      const createdDish = responseData.dish;
+      toast.success("Dish created successfully");
       dispatch(addDish(createdDish));
     } catch (error) {
       console.error("Error creating dish:", error);
+      toast.error("Failed to create dish");
     } finally {
       setIsLoading(false);
+      setShowCreateModal(false);
     }
   };
 
   return (
     <div className="relative">
       {isLoading && <LoadingOverlay />}
+      <Toaster />
+      <MenuHeader onAddDish={() => setShowCreateModal(true)} isLoading={isLoading} />
 
-      <div className="flex justify-between items-center  mb-8">
-        <div>
-          <h2 className="text-3xl font-bold text-white mb-2">Menu</h2>
-          <p className="text-gray-400">Explore our delicious dishes</p>
+      <div className="relative">
+        <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-blue-500/10 rounded-xl blur-3xl"></div>
+        <div className="relative">
+          {dishes && dishes.length > 0 ? (
+            <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 
+              ${isLoading ? "opacity-50" : ""} transition-opacity duration-200`}>
+              {dishes.map((dish) => (
+                <Dish
+                  key={dish._id}
+                  dish={dish}
+                  isLoading={isLoading}
+                  isInCart={isItemInCart(dish._id)}
+                  onAddToCart={handleAddToCart}
+                  onEditClick={handleEditClick}
+                  onDeleteClick={handleDeleteDish}
+                />
+              ))}
+            </div>
+          ) : (
+            <EmptyState />
+          )}
         </div>
-        <button
-          className="px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-xl
-            flex items-center gap-2 transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed
-            shadow-lg shadow-purple-600/20"
-          disabled={isLoading}
-          onClick={() => setShowCreateModal(true)}
-        >
-          <PlusCircle className="h-5 w-5" />
-          Add Dish
-        </button>
-      </div>
-
-      <div
-        className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 
-        ${isLoading ? "opacity-50" : ""} transition-opacity duration-200`}
-      >
-        {dishes.map((dish) => (
-            <Dish
-              key={dish._id}
-              dish={dish}
-              isLoading={isLoading}
-              isInCart={isItemInCart(dish._id)}
-              onAddToCart={handleAddToCart}
-              onEditClick={handleEditClick}
-              onDeleteClick={handleDeleteDish}
-            />
-        ))}
       </div>
 
       {selectedDish && (
@@ -157,4 +183,4 @@ const DishList = ({ dishes, counterId }) => {
   );
 };
 
-export default DishList;
+export default DishList

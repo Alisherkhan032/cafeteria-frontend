@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import {
   setLoading,
   selectloadingState,
@@ -8,13 +8,13 @@ import {
   selectCurrentUser,
   setMerchantCounters,
   selectMerchantCounters,
-  updateMerchantCounter
 } from "@/slices/authSlice";
 import { useDispatch, useSelector } from "react-redux";
-import axios from "axios";
-import { API_BASE_URL } from "@/utils/apiConfigs";
-import { CounterSkeleton } from "@/utils/skeletonConfig";
 import { useNavigate } from "react-router-dom";
+import NavbarLayout from "@/components/NavbarLayout";
+import { makeApiCall } from "@/services/makeApiCall";
+import { CounterSkeleton } from "@/utils/skeletonConfig";
+import { DEFAULT_IMG_PATH } from "@/utils/constants";
 
 const MerchantPanel = () => {
   const dispatch = useDispatch();
@@ -22,25 +22,26 @@ const MerchantPanel = () => {
   const loading = useSelector(selectloadingState);
   const merchant = useSelector(selectCurrentUser);
   const merchantCounters = useSelector(selectMerchantCounters);
-
-  const CountersOfMerchants = async () => {
-    try {
-      dispatch(setLoading(true));
-      const response = await axios.get(
-        `${API_BASE_URL}/users/counters/merchant/${merchant._id}`
-      );
-      const counters = response.data.counters;
-      dispatch(setMerchantCounters(counters));
-    } catch (error) {
-      console.log("Error fetching counters", error.message);
-    } finally {
-      dispatch(setLoading(false));
-    }
-  };
-
+  
   useEffect(() => {
-    CountersOfMerchants();
-  }, [merchant]);
+    const fetchCounters = async () => {
+      if (!merchant?._id) return;
+      
+      try {
+        dispatch(setLoading(true));
+        const responseData = await makeApiCall('get', `/users/counters/merchant/${merchant._id}`);
+        console.log("responseData in merchant panel", responseData);
+        const counters = responseData.counters;
+        dispatch(setMerchantCounters(counters));
+      } catch (error) {
+        console.log("Error fetching counters", error.message);
+      } finally {
+        dispatch(setLoading(false));
+      }
+    };
+
+    fetchCounters();
+  }, [merchant?._id, dispatch]); // Added dispatch to dependencies
 
   const handleCounterClick = (counter) => {
     dispatch(setCurrentCounter(counter));
@@ -106,9 +107,14 @@ const MerchantPanel = () => {
           </div>
         )}
       </div>
-
     </>
   );
 };
 
-export default MerchantPanel;
+export default function Wrapper() {
+  return (
+    <NavbarLayout>
+      <MerchantPanel />
+    </NavbarLayout>
+  );
+}

@@ -7,6 +7,8 @@ import { Store, Clock, Users, ChefHat } from "lucide-react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import CounterCard from "@/components/CounterCard";
+import NavbarLayout from "@/components/NavbarLayout";
+import { makeApiCall } from "@/services/makeApiCall";
 
 const CounterSkeleton = () => (
   <div className="bg-gray-800/50 rounded-xl p-6 animate-pulse">
@@ -29,8 +31,11 @@ const Home = () => {
   const fetchCounters = async () => {
     try {
       dispatch(setLoading(true));
-      const response = await axios.get(`${API_BASE_URL}/counters`);
-      const { counters } = response.data;
+      // const response = await axios.get(`${API_BASE_URL}/counters`);
+      const response = await makeApiCall("get", "/counters");
+
+      const { counters } = response;
+
       dispatch(setCounter(counters));
     } catch (error) {
       console.log("Error fetching counters", error.message);
@@ -57,18 +62,23 @@ const Home = () => {
 
   const handleEditCounter = async (updatedData) => {
     try {
-      dispatch(setLoading(true))
-      const response = await axios.put(
-        `${API_BASE_URL}/counters/${updatedData.id}`,
+      dispatch(setLoading(true));
+      // const response = await axios.put(
+      //   `${API_BASE_URL}/counters/${updatedData.id}`,
+      //   updatedData
+      // );
+      const response = await makeApiCall(
+        "put",
+        `/counters/${updatedData.id}`,
         updatedData
       );
       const updatedCounter = response.data.counter;
-      dispatch(updateConter(updatedCounter))
+      dispatch(updateCounter(updatedCounter));
     } catch (error) {
       console.error("Error updating counter:", error);
       //todo : toast notification
     } finally {
-      dispatch(setLoading(false))
+      dispatch(setLoading(false));
     }
   };
 
@@ -117,4 +127,10 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default function Wrapper() {
+  return (
+    <NavbarLayout>
+      <Home />
+    </NavbarLayout>
+  );
+}
