@@ -66,8 +66,8 @@ function App() {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route element={<Auth />}>
-            <Route path="/" element={<LandingPage />} />
+          <Route path="/" element={<LandingPage />} />
+          <Route element={<Auth />}>  
             <Route path="/home" element={<Home />} />
             <Route path="/counter/:counterId" element={<Counter />} />
             <Route path="/cart" element={<Cart />} />

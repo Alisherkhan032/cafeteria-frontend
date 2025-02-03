@@ -8,6 +8,7 @@ import {
   UtensilsCrossed,
   CircleUserRound,
   UserPen,
+  UserCog,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { selectCartQantity } from "@/slices/cartSlice";
@@ -48,14 +49,23 @@ const Navbar = () => {
 
       {/* Navigation Links */}
       <div className="relative top-0 left-0 w-full flex flex-row items-center justify-end bg-gray-900 text-white space-x-8 px-6 py-3">
-        <Link
+        {user && <Link
           to="/home"
           className="flex items-center space-x-2 hover:text-yellow-400 transition-colors py-2 md:py-0"
           onClick={() => setIsOpen(false)}
         >
           <Store size={20} />
           <span className="text-lg">Food Counters</span>
-        </Link>
+        </Link>}
+
+        {!user && <Link
+          to="/login"
+          className="flex items-center space-x-2 hover:text-yellow-400 transition-colors py-2 md:py-0"
+          onClick={() => setIsOpen(false)}
+        >
+          <UserCog size={20} />
+          <span className="text-lg">Sign In</span>
+        </Link>}
 
         {user && user.role === ROLES.ADMIN && <Link
           to="/admin"
@@ -75,14 +85,14 @@ const Navbar = () => {
           <span className="text-lg">Merchant Panel</span>
         </Link>}
 
-        <Link
+        {user && <Link
           to="/profile"
           className="flex items-center space-x-2 hover:text-yellow-400 transition-colors py-2 md:py-0"
           onClick={() => setIsOpen(false)}
         >
           <UserPen size={20} />
           <span className="text-lg">Profile</span>
-        </Link>
+        </Link>}
 
         {user && user.role === ROLES.CUSTOMER &&<div className="flex items-center gap-x-3 ">
           <Link to="/cart" className="flex items-center gap-x-1">
