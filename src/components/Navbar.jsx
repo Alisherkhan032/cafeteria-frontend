@@ -14,6 +14,7 @@ import { selectCartQantity } from "@/slices/cartSlice";
 import { useSelector } from "react-redux";
 import { selectCurrentUser } from "@/slices/authSlice";
 import {capitalize} from 'lodash'
+import { ROLES } from "@/utils/constants";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -56,23 +57,23 @@ const Navbar = () => {
           <span className="text-lg">Food Counters</span>
         </Link>
 
-        <Link
+        {user && user.role === ROLES.ADMIN && <Link
           to="/admin"
           className="flex items-center space-x-2 hover:text-yellow-400 transition-colors py-2 md:py-0"
           onClick={() => setIsOpen(false)}
         >
           <ShieldCheck size={20} />
           <span className="text-lg">Admin Panel</span>
-        </Link>
+        </Link>}
 
-        <Link
+        {user && user.role === ROLES.MERCHANT && <Link
           to="/merchant"
           className="flex items-center space-x-2 hover:text-yellow-400 transition-colors py-2 md:py-0"
           onClick={() => setIsOpen(false)}
         >
           <CircleUserRound size={20} />
           <span className="text-lg">Merchant Panel</span>
-        </Link>
+        </Link>}
 
         <Link
           to="/profile"
@@ -83,7 +84,7 @@ const Navbar = () => {
           <span className="text-lg">Profile</span>
         </Link>
 
-        <div className="flex items-center gap-x-3 ">
+        {user && user.role === ROLES.CUSTOMER &&<div className="flex items-center gap-x-3 ">
           <Link to="/cart" className="flex items-center gap-x-1">
             <div className="text-white text-3xl font-medium flex justify-center -space-x-5 space-y-1">
               <i className="fi fi-rs-dolly-flatbed-empty"></i>
@@ -95,7 +96,7 @@ const Navbar = () => {
               <span className="text-white text-lg  ml-2">Cart</span>{" "}
             </div>
           </Link>
-        </div>
+        </div>}
       </div>
     </nav>
   );

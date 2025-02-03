@@ -10,6 +10,9 @@ import {
   Typography,
 } from "@mui/material";
 import { DEFAULT_DISH_PATH } from "@/utils/constants";
+import { useSelector } from "react-redux";
+import { selectCurrentUser } from "@/slices/authSlice";
+import { ROLES } from "@/utils/constants";
 
 const DishCard = ({
   dish,
@@ -21,6 +24,7 @@ const DishCard = ({
 }) => {
   const isDishInStock = dish.inStock;
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const user = useSelector(selectCurrentUser);
 
   const handleDeleteClick = (e) => {
     e.preventDefault();
@@ -84,22 +88,24 @@ const DishCard = ({
           {/* Buttons Section (Sticky to Bottom) */}
           <div className="mt-auto pt-4">
             <div className="flex items-center justify-between">
-              <div className="flex gap-2">
-                <button
-                  onClick={() => onEditClick(dish)}
-                  className="p-2 text-gray-400 hover:text-white hover:bg-gray-700/50 rounded-lg transition-colors"
-                  disabled={isLoading}
-                >
-                  <Edit2 className="h-5 w-5" />
-                </button>
-                <button
-                  onClick={handleDeleteClick}
-                  className="p-2 text-gray-400 hover:text-red-400 hover:bg-gray-700/50 rounded-lg transition-colors"
-                  disabled={isLoading}
-                >
-                  <Trash2 className="h-5 w-5" />
-                </button>
-              </div>
+              {user.role == ROLES.MERCHANT && (
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => onEditClick(dish)}
+                    className="p-2 text-gray-400 hover:text-white hover:bg-gray-700/50 rounded-lg transition-colors"
+                    disabled={isLoading}
+                  >
+                    <Edit2 className="h-5 w-5" />
+                  </button>
+                  <button
+                    onClick={handleDeleteClick}
+                    className="p-2 text-gray-400 hover:text-red-400 hover:bg-gray-700/50 rounded-lg transition-colors"
+                    disabled={isLoading}
+                  >
+                    <Trash2 className="h-5 w-5" />
+                  </button>
+                </div>
+              )}
 
               {!isDishInStock ? (
                 <button
@@ -110,8 +116,25 @@ const DishCard = ({
                   Out of Stock
                 </button>
               ) : isInCart ? (
-                <Link to="/cart" className="">
+                user.role == ROLES.CUSTOMER && (
+                  <Link to="/cart" className="">
+                    <button
+                      disabled={isLoading}
+                      className={`px-4 py-2 rounded-lg flex items-center gap-2 cursor-pointer transition-all duration-300 ${
+                        isInCart
+                          ? "bg-green-600/20 hover:bg-green-700/20 text-green-400"
+                          : "bg-purple-600 hover:bg-purple-700 text-white"
+                      }`}
+                    >
+                      <ShoppingCart className="h-5 w-5" />
+                      Go to Cart
+                    </button>
+                  </Link>
+                )
+              ) : (
+                user.role == ROLES.CUSTOMER && (
                   <button
+                    onClick={() => onAddToCart(dish)}
                     disabled={isLoading}
                     className={`px-4 py-2 rounded-lg flex items-center gap-2 cursor-pointer transition-all duration-300 ${
                       isInCart
@@ -120,22 +143,9 @@ const DishCard = ({
                     }`}
                   >
                     <ShoppingCart className="h-5 w-5" />
-                    Go to Cart
+                    Add to Cart
                   </button>
-                </Link>
-              ) : (
-                <button
-                  onClick={() => onAddToCart(dish)}
-                  disabled={isLoading}
-                  className={`px-4 py-2 rounded-lg flex items-center gap-2 cursor-pointer transition-all duration-300 ${
-                    isInCart
-                      ? "bg-green-600/20 hover:bg-green-700/20 text-green-400"
-                      : "bg-purple-600 hover:bg-purple-700 text-white"
-                  }`}
-                >
-                  <ShoppingCart className="h-5 w-5" />
-                  Add to Cart
-                </button>
+                )
               )}
             </div>
           </div>
