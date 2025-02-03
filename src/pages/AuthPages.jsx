@@ -17,7 +17,7 @@ import axios from "axios";
 import { AUTH_BASE_URL, API_BASE_URL } from "@/utils/apiConfigs";
 import { makeApiCall } from "@/services/makeApiCall";
 import { setCart } from "@/slices/cartSlice";
-import { UtensilsCrossed } from "lucide-react";
+import { ArrowLeft, UtensilsCrossed } from "lucide-react";
 
 export function Auth() {
   const user = useSelector(selectCurrentUser);
@@ -64,7 +64,15 @@ export function Login() {
   };
 
   return (
-    <div className="min-h-screen py-12 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900">
+    <div className="min-h-screen py-4 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900">
+      <Link to='/'>
+        <div className="flex items-center space-x-1  ml-2 cursor-pointer">
+          <ArrowLeft className="text-yellow-400" size={28} />
+          <div className="text-white text-2xl font-bold whitespace-nowrap">
+            Go back
+          </div>
+        </div>
+      </Link>
       <div className="flex items-center space-x-3 justify-center mb-4">
         <UtensilsCrossed className="text-yellow-400" size={28} />
         <div className="text-white text-2xl font-bold whitespace-nowrap">
@@ -163,7 +171,15 @@ export function Register() {
   };
 
   return (
-    <div className="min-h-screen py-10 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900">
+    <div className="min-h-screen py-4 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900">
+      <Link to='/'>
+        <div className="flex items-center space-x-1   ml-2 cursor-pointer">
+          <ArrowLeft className="text-yellow-400" size={28} />
+          <div className="text-white text-2xl font-bold whitespace-nowrap">
+            Go back
+          </div>
+        </div>
+      </Link>
       <div className="flex items-center space-x-3 justify-center mb-4">
         <UtensilsCrossed className="text-yellow-400" size={28} />
         <div className="text-white text-2xl font-bold whitespace-nowrap">
