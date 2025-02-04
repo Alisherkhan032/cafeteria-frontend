@@ -24,10 +24,14 @@ const LoadingOverlay = () => (
 const MenuHeader = ({ onAddDish, isLoading, user }) => (
   <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-0 mb-6 sm:mb-8">
     <div className="w-full sm:w-auto">
-      <h2 className="text-2xl sm:text-3xl font-bold text-white mb-1 sm:mb-2">Menu</h2>
-      <p className="text-sm sm:text-base text-gray-400">Explore our delicious dishes</p>
+      <h2 className="text-2xl sm:text-3xl font-bold text-white mb-1 sm:mb-2">
+        Menu
+      </h2>
+      <p className="text-sm sm:text-base text-gray-400">
+        Explore our delicious dishes
+      </p>
     </div>
-    
+
     {user && user.role === ROLES.MERCHANT && (
       <button
         className="w-full sm:w-auto px-4 sm:px-6 py-2.5 sm:py-3 bg-purple-600 hover:bg-purple-700 
@@ -55,6 +59,7 @@ const EmptyState = () => (
 );
 
 const DishList = ({ dishes, counterId }) => {
+  console.log('counter id in dishList', counterId);
   const dispatch = useDispatch();
   const totalItemsInCart = useSelector(selectItemsFromCart);
   const user = useSelector(selectCurrentUser);
@@ -93,12 +98,14 @@ const DishList = ({ dishes, counterId }) => {
   };
 
   const handleEditSave = async (updatedDish) => {
+    console.log('counter id in edit save', counterId);
     try {
       setIsLoading(true);
       const responseData = await makeApiCall(
         "patch",
         `/dishes/${updatedDish.id}`,
-        updatedDish
+        updatedDish,
+        { counterId: counterId } // Passing counterId as params
       );
       const updatedDishFromServer = responseData.dish;
       toast.success("Dish updated successfully");
@@ -116,7 +123,9 @@ const DishList = ({ dishes, counterId }) => {
   const handleDeleteDish = async (id) => {
     try {
       setIsLoading(true);
-      const responseData = await makeApiCall("delete", `/dishes/${id}`);
+      const responseData = await makeApiCall("delete", `/dishes/${id}`, null, {
+        counterId: counterId,
+      });
       const deletedDishFromServer = responseData.dish;
       toast.success("Dish deleted successfully");
       dispatch(removeDish(deletedDishFromServer));
@@ -131,10 +140,15 @@ const DishList = ({ dishes, counterId }) => {
   const handleCreateDish = async (newDish) => {
     try {
       setIsLoading(true);
-      const responseData = await makeApiCall("post", "/dishes", {
-        ...newDish,
-        counter: counterId,
-      });
+      const responseData = await makeApiCall(
+        "post",
+        "/dishes",
+        {
+          ...newDish,
+          counter : counterId
+        },
+        { counterId: counterId }
+      );
       const createdDish = responseData.dish;
       toast.success("Dish created successfully");
       dispatch(addDish(createdDish));

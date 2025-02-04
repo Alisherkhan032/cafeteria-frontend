@@ -18,6 +18,7 @@ import { AUTH_BASE_URL, API_BASE_URL } from "@/utils/apiConfigs";
 import { makeApiCall } from "@/services/makeApiCall";
 import { setCart } from "@/slices/cartSlice";
 import { ArrowLeft, Eye, EyeOff, UtensilsCrossed } from "lucide-react";
+import { ROLES } from "@/utils/constants";
 
 export function Auth() {
   const user = useSelector(selectCurrentUser);
@@ -27,6 +28,23 @@ export function Auth() {
   ) : (
     <Navigate to="/login" state={{ from: location.pathname }} replace />
   );
+}
+
+export function CustomerRoute() {
+  const user = useSelector(selectCurrentUser);
+  const location = useLocation();
+
+  // If user is not logged in, redirect to login.
+  if (!user) {
+    return <Navigate to="/login" state={{ from: location.pathname }} replace />;
+  }
+
+  // Allow access if user is either a customer or an admin
+  if (user.role !== ROLES.CUSTOMER && user.role !== ROLES.ADMIN) {
+    return <Navigate to="/" replace />;
+  }
+  // User is authenticated and is a customer. Render child routes.
+  return <Outlet />;
 }
 
 export function Login() {

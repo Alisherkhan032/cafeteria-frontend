@@ -24,7 +24,7 @@ const Navbar = () => {
 
   const NavLinks = () => (
     <>
-      {user && (
+      {user && (user.role === ROLES.CUSTOMER || user.role === ROLES.ADMIN) && (
         <Link
           to="/home"
           className="flex items-center space-x-2 text-white hover:text-yellow-400 transition-colors py-2"
