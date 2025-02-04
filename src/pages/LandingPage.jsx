@@ -14,8 +14,12 @@ import playstorePng from "../../public/playstore.png";
 import appstorePng from "../../public/appstore.png";
 import { signatureDishes, testimonials } from "@/utils/landingpageConfigs";
 import NavbarLayout from "@/components/NavbarLayout";
+import { selectCurrentUser } from "@/slices/authSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { ROLES } from "@/utils/constants";
 
 const LandingPage = () => {
+  const user = useSelector(selectCurrentUser);
   return (
     <div className="dark bg-gray-900">
       {/* Hero Section */}
@@ -30,22 +34,32 @@ const LandingPage = () => {
         </div>
 
         <div className="relative z-10 container mx-auto text-center">
-    <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold text-white mb-6 leading-tight">
-      Taste the <span className="text-purple-400">Difference</span>
-    </h1>
-    <p className="text-lg sm:text-xl md:text-2xl text-gray-300 mb-8 max-w-2xl mx-auto">
-      Experience culinary excellence delivered to your doorstep
-    </p>
-    <div className="flex justify-center">
-      <Link
-        to="/home"
-        className="bg-purple-600 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-semibold hover:bg-purple-700 transition-all flex items-center gap-2 group"
-      >
-        Explore Restaurants
-        <ChevronRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
-      </Link>
-    </div>
-  </div>
+          <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold text-white mb-6 leading-tight">
+            Taste the <span className="text-purple-400">Difference</span>
+          </h1>
+          <p className="text-lg sm:text-xl md:text-2xl text-gray-300 mb-8 max-w-2xl mx-auto">
+            Experience culinary excellence delivered to your doorstep
+          </p>
+          <div className="flex justify-center">
+            {user && user.role === ROLES.MERCHANT ? (
+              <Link
+                to="/merchant"
+                className="bg-purple-600 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-semibold hover:bg-purple-700 transition-all flex items-center gap-2 group"
+              >
+                Go to Merchant Panel
+                <ChevronRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
+              </Link>
+            ) : (
+              <Link
+                to="/home"
+                className="bg-purple-600 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-semibold hover:bg-purple-700 transition-all flex items-center gap-2 group"
+              >
+                Explore Restaurants
+                <ChevronRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
+              </Link>
+            )}
+          </div>
+        </div>
       </section>
 
       {/* Features Section */}
@@ -106,13 +120,24 @@ const LandingPage = () => {
               From sizzling street food to gourmet experiences, discover a world
               of tastes curated by our expert chefs
             </p>
-            <Link
-              to="/home"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
-            >
-              Browse Restaurants
-              <ChevronRight className="h-5 w-5" />
-            </Link>
+
+            {user && user.role === ROLES.MERCHANT ? (
+              <Link
+                to="/merchant"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+              >
+                Go to Merchant Panel
+                <ChevronRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
+              </Link>
+            ) : (
+              <Link
+                to="/home"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+              >
+                Explore Restaurants
+                <ChevronRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
+              </Link>
+            )}
           </div>
         </div>
       </section>
@@ -298,10 +323,10 @@ const LandingPage = () => {
   );
 };
 
-export default function Wrapper(){
+export default function Wrapper() {
   return (
     <NavbarLayout>
       <LandingPage />
     </NavbarLayout>
-  )
+  );
 }
