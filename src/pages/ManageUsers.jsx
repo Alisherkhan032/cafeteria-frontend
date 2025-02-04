@@ -15,6 +15,7 @@ import toast, { Toaster } from "react-hot-toast";
 import NavbarLayout from "@/components/NavbarLayout";
 import { makeApiCall } from "@/services/makeApiCall";
 import { CounterSkeleton } from "@/utils/skeletonConfig";
+import Breadcrumb from "@/components/Breadcrumb";
 
 const LoadingOverlay = () => (
   <div className="fixed inset-0 h-screen bg-gray-900/50 backdrop-blur-xs z-50 flex items-center justify-center">
@@ -42,10 +43,29 @@ const ManageUsers = () => {
     password: "",
   });
 
+  const breadcrumbItems = [
+    {
+      label: "Home",
+      path: "/",
+    },
+    {
+      label: "Counters",
+      path: "/home",
+    },
+    {
+      label: "Admin Panel",
+      path: "/admin",
+    },
+    {
+      label: "Manage Users",
+      path: "/",
+    },
+  ];
+
   const fetchUsers = async () => {
     try {
       setLoading(true);
-      console.log('searchTerm', searchTerm);
+      console.log("searchTerm", searchTerm);
       const params = {
         page: currentPage,
         role: selectedRole !== "all" ? selectedRole : undefined,
@@ -53,7 +73,7 @@ const ManageUsers = () => {
       };
 
       // const response = await axios.get(`${API_BASE_URL}/users`, { params });
-      const responseData = await makeApiCall("get", "/users", null,  params);
+      const responseData = await makeApiCall("get", "/users", null, params);
       console.log(responseData);
       dispatch(setUsers(responseData.users));
       setTotalPages(responseData.totalPages || 1);
@@ -96,19 +116,17 @@ const ManageUsers = () => {
       fetchUsers(); // Refresh the list after successful update
     } catch (error) {
       console.error("Error updating role:", error);
-      
+
       // Check if the error response contains the specific message
       if (error.response && error.response.status === 400) {
         alert(error.response.data.message); // Display the error message to the user
       } else {
         alert("Something went wrong. Please try again.");
       }
-    }
-    finally {
+    } finally {
       setLoading(false);
     }
   };
-  
 
   const handleAddUser = async () => {
     try {
@@ -132,15 +150,17 @@ const ManageUsers = () => {
     }
   };
 
-
   return (
-    <div className="px-4 sm:px-8 min-h-screen py-6 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900">
+    <div className="min-h-screen px-2 sm:px-6 md:px-20 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900">
       <Toaster position="top-right" />
+      <Breadcrumb items={breadcrumbItems} />
       {loading && <LoadingOverlay />}
-      
+
       {/* Header Section - Made responsive */}
       <div className="flex flex-col gap-4 mb-6">
-        <h1 className="text-2xl font-bold text-white text-center sm:text-left">User Management</h1>
+        <h1 className="text-2xl font-bold text-white text-center sm:text-left">
+          User Management
+        </h1>
 
         <div className="flex flex-col sm:flex-row gap-4">
           <div className="relative flex-1">
@@ -182,20 +202,31 @@ const ManageUsers = () => {
           <table className="w-full">
             <thead className="bg-gray-900/60">
               <tr>
-                <th className="px-6 py-4 text-left text-gray-300 font-medium">Name</th>
-                <th className="px-6 py-4 text-left text-gray-300 font-medium">Email</th>
-                <th className="px-6 py-4 text-left text-gray-300 font-medium">Role</th>
+                <th className="px-6 py-4 text-left text-gray-300 font-medium">
+                  Name
+                </th>
+                <th className="px-6 py-4 text-left text-gray-300 font-medium">
+                  Email
+                </th>
+                <th className="px-6 py-4 text-left text-gray-300 font-medium">
+                  Role
+                </th>
               </tr>
             </thead>
             <tbody>
               {users.map((user) => (
-                <tr key={user._id} className="border-b border-gray-700/50 hover:bg-gray-900/20">
+                <tr
+                  key={user._id}
+                  className="border-b border-gray-700/50 hover:bg-gray-900/20"
+                >
                   <td className="px-6 py-4 text-white">{user.name}</td>
                   <td className="px-6 py-4 text-gray-400">{user.email}</td>
                   <td className="px-6 py-4">
                     <select
                       value={user.role}
-                      onChange={(e) => handleRoleChangeForUser(user._id, e.target.value)}
+                      onChange={(e) =>
+                        handleRoleChangeForUser(user._id, e.target.value)
+                      }
                       className="bg-gray-700 border border-gray-600 rounded px-3 py-1 text-white focus:outline-none focus:border-purple-500"
                     >
                       <option value="customer">Customer</option>
@@ -218,7 +249,9 @@ const ManageUsers = () => {
                 <div className="text-gray-400 text-sm">{user.email}</div>
                 <select
                   value={user.role}
-                  onChange={(e) => handleRoleChangeForUser(user._id, e.target.value)}
+                  onChange={(e) =>
+                    handleRoleChangeForUser(user._id, e.target.value)
+                  }
                   className="bg-gray-700 border border-gray-600 rounded px-3 py-1 text-white focus:outline-none focus:border-purple-500 mt-2"
                 >
                   <option value="customer">Customer</option>
@@ -252,7 +285,9 @@ const ManageUsers = () => {
             <span className="hidden sm:inline">Previous</span>
           </button>
           <button
-            onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+            onClick={() =>
+              setCurrentPage(Math.min(totalPages, currentPage + 1))
+            }
             disabled={currentPage === totalPages}
             className="bg-gray-800 disabled:opacity-50 hover:bg-gray-700 px-4 py-2 rounded-lg text-white flex items-center gap-2"
           >
@@ -282,7 +317,9 @@ const ManageUsers = () => {
                 <input
                   type="text"
                   value={newUser.name}
-                  onChange={(e) => setNewUser({ ...newUser, name: e.target.value })}
+                  onChange={(e) =>
+                    setNewUser({ ...newUser, name: e.target.value })
+                  }
                   className="w-full bg-gray-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
                 />
               </div>
@@ -291,7 +328,9 @@ const ManageUsers = () => {
                 <input
                   type="email"
                   value={newUser.email}
-                  onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
+                  onChange={(e) =>
+                    setNewUser({ ...newUser, email: e.target.value })
+                  }
                   className="w-full bg-gray-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
                 />
               </div>
@@ -299,7 +338,9 @@ const ManageUsers = () => {
                 <label className="block text-gray-300 mb-2">Role</label>
                 <select
                   value={newUser.role}
-                  onChange={(e) => setNewUser({ ...newUser, role: e.target.value })}
+                  onChange={(e) =>
+                    setNewUser({ ...newUser, role: e.target.value })
+                  }
                   className="w-full bg-gray-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
                 >
                   <option value="customer">Customer</option>
@@ -312,7 +353,9 @@ const ManageUsers = () => {
                 <input
                   type={showPassword ? "text" : "password"}
                   value={newUser.password}
-                  onChange={(e) => setNewUser({ ...newUser, password: e.target.value })}
+                  onChange={(e) =>
+                    setNewUser({ ...newUser, password: e.target.value })
+                  }
                   className="w-full bg-gray-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-purple-500 pr-10"
                 />
                 <button

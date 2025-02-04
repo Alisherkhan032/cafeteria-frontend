@@ -10,11 +10,27 @@ import { useDispatch } from 'react-redux';
 import { resetAuthSlice } from '@/slices/authSlice';
 import { resetCart } from '@/slices/cartSlice';
 import { resetCounterSlice } from '@/slices/counterSlice';
+import Breadcrumb from '@/components/Breadcrumb';
 
 const ProfilePage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const user = useSelector(selectCurrentUser)
+
+  const breadcrumbItems = [
+    {
+      label: "Home",
+      path: "/",
+    },
+    {
+      label: "Counters",
+      path: "/home",
+    },
+    {
+      label: "Profile",
+      path: "/profile",
+    },
+  ];
 
   const handleLogout = async () => {
     await makeApiCall( 'post','/auth/logout');
@@ -31,7 +47,8 @@ const ProfilePage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen px-2 sm:px-6 md:px-20 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900">
+      <Breadcrumb items={breadcrumbItems} />
       <div className="max-w-3xl mx-auto">
         {/* Profile Card */}
         <div className="bg-gray-800/50 backdrop-blur-sm rounded-2xl p-8 shadow-lg border border-gray-700/50">

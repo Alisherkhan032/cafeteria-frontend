@@ -1,8 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  selectAllMerchants,
-  setMerchants,
-} from "@/slices/authSlice";
+import { selectAllMerchants, setMerchants } from "@/slices/authSlice";
 import {
   setCounter,
   selectCounters,
@@ -19,7 +16,15 @@ import CreateCounterModal from "@/components/CreateCounterModal";
 import { toast, Toaster } from "react-hot-toast";
 import NavbarLayout from "./NavbarLayout";
 import { makeApiCall } from "@/services/makeApiCall";
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from "@mui/material";
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Typography,
+} from "@mui/material";
+import Breadcrumb from "./Breadcrumb";
 
 const ManageCounter = () => {
   const dispatch = useDispatch();
@@ -31,6 +36,25 @@ const ManageCounter = () => {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [counterToDelete, setCounterToDelete] = useState(null);
+
+  const breadcrumbItems = [
+    {
+      label: "Home",
+      path: "/",
+    },
+    {
+      label: "Counters",
+      path: "/home",
+    },
+    {
+      label: "Admin Panel",
+      path: "/admin",
+    },
+    {
+      label: "Manage Counters",
+      path: "/",
+    },
+  ];
 
   const fetchData = async () => {
     try {
@@ -96,7 +120,7 @@ const ManageCounter = () => {
         merchant: updatedData.merchants,
       };
       delete dataToUpdate.merchants;
-      
+
       const responseData = await makeApiCall(
         "put",
         `/counters/${updatedData.id}`,
@@ -150,91 +174,94 @@ const ManageCounter = () => {
 
   return (
     <>
-      <div className="px-2 sm:px-6 md:px-20 min-h-screen py-4 sm:py-10 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900">
-  <Toaster position="top-right" />
-  {allCounters && allCounters.length > 0 ? (
-    <div className="space-y-3 sm:space-y-4">
-      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-4 sm:mb-8">
-        <div>
-          <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2">Counters</h2>
-        </div>
-        <button
-          className="px-4 sm:px-6 py-2 sm:py-3 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-xl
+      <div className="min-h-screen px-2 sm:px-6 md:px-20 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900">
+        <Breadcrumb items={breadcrumbItems} />
+        <Toaster position="top-right" />
+        {allCounters && allCounters.length > 0 ? (
+          <div className="space-y-3 sm:space-y-4">
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-4 sm:mb-8">
+              <div>
+                <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2">
+                  Counters
+                </h2>
+              </div>
+              <button
+                className="px-4 sm:px-6 py-2 sm:py-3 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-xl
           flex items-center gap-2 transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed
           shadow-lg shadow-purple-600/20 w-full sm:w-auto justify-center"
-          disabled={loading}
-          onClick={() => setIsCreateModalOpen(true)}
-        >
-          <PlusCircle className="h-4 w-4 sm:h-5 sm:w-5" />
-          <span className="text-sm sm:text-base">Add Counter</span>
-        </button>
-      </div>
+                disabled={loading}
+                onClick={() => setIsCreateModalOpen(true)}
+              >
+                <PlusCircle className="h-4 w-4 sm:h-5 sm:w-5" />
+                <span className="text-sm sm:text-base">Add Counter</span>
+              </button>
+            </div>
 
-      {allCounters.map((counter) => (
-        <div
-          key={counter._id}
-          className="relative flex flex-col sm:flex-row items-start sm:items-center bg-gray-800/50 backdrop-blur-sm rounded-xl overflow-hidden border border-gray-700/50 
+            {allCounters.map((counter) => (
+              <div
+                key={counter._id}
+                className="relative flex flex-col sm:flex-row items-start sm:items-center bg-gray-800/50 backdrop-blur-sm rounded-xl overflow-hidden border border-gray-700/50 
           hover:border-purple-500/50 transition-all group duration-300 cursor-pointer p-3 sm:p-4 gap-3 sm:gap-4"
-        >
-          <div className="w-full sm:w-24 h-40 sm:h-24 flex-shrink-0 relative">
-            <img
-              src={counter.image || DEFAULT_IMG_PATH}
-              alt={counter.name}
-              className="w-full h-full object-cover rounded-lg transform group-hover:scale-105 transition-transform duration-500"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/40 to-transparent rounded-lg" />
-          </div>
+              >
+                <div className="w-full sm:w-24 h-40 sm:h-24 flex-shrink-0 relative">
+                  <img
+                    src={counter.image || DEFAULT_IMG_PATH}
+                    alt={counter.name}
+                    className="w-full h-full object-cover rounded-lg transform group-hover:scale-105 transition-transform duration-500"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/40 to-transparent rounded-lg" />
+                </div>
 
-          <div className="flex-1">
-            <div className="flex justify-between items-start gap-2">
-              <h3 className="text-lg sm:text-xl font-bold text-white mb-1 group-hover:text-purple-400 transition-colors">
-                {counter.name}
-              </h3>
-              <div className="flex gap-x-2">
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleEditClick(counter);
-                  }}
-                  className="bg-gray-900/60 backdrop-blur-sm p-1.5 sm:p-2 rounded-lg hover:bg-gray-800 transition-colors"
-                >
-                  <Pencil className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-white" />
-                </button>
+                <div className="flex-1">
+                  <div className="flex justify-between items-start gap-2">
+                    <h3 className="text-lg sm:text-xl font-bold text-white mb-1 group-hover:text-purple-400 transition-colors">
+                      {counter.name}
+                    </h3>
+                    <div className="flex gap-x-2">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleEditClick(counter);
+                        }}
+                        className="bg-gray-900/60 backdrop-blur-sm p-1.5 sm:p-2 rounded-lg hover:bg-gray-800 transition-colors"
+                      >
+                        <Pencil className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-white" />
+                      </button>
 
-                <button
-                  onClick={(e) => handleDeleteClick(counter, e)}
-                  className="bg-gray-900/60 backdrop-blur-sm p-1.5 sm:p-2 rounded-lg hover:bg-red-900 transition-colors cursor-pointer"
-                >
-                  <Trash className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-white" />
-                </button>
+                      <button
+                        onClick={(e) => handleDeleteClick(counter, e)}
+                        className="bg-gray-900/60 backdrop-blur-sm p-1.5 sm:p-2 rounded-lg hover:bg-red-900 transition-colors cursor-pointer"
+                      >
+                        <Trash className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-white" />
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-wrap gap-1.5 sm:gap-2 mb-2">
+                    {counter.merchant.map((merchant, index) => (
+                      <span
+                        key={index}
+                        className="bg-gray-900/60 backdrop-blur-sm px-2 py-0.5 sm:py-1 rounded-lg text-xs sm:text-sm text-gray-200"
+                      >
+                        {merchant.name}
+                      </span>
+                    ))}
+                  </div>
+                  <p className="text-gray-200 text-xs sm:text-sm line-clamp-2">
+                    {counter.description}
+                  </p>
+                </div>
               </div>
-            </div>
-
-            <div className="flex flex-wrap gap-1.5 sm:gap-2 mb-2">
-              {counter.merchant.map((merchant, index) => (
-                <span
-                  key={index}
-                  className="bg-gray-900/60 backdrop-blur-sm px-2 py-0.5 sm:py-1 rounded-lg text-xs sm:text-sm text-gray-200"
-                >
-                  {merchant.name}
-                </span>
-              ))}
-            </div>
-            <p className="text-gray-200 text-xs sm:text-sm line-clamp-2">
-              {counter.description}
+            ))}
+          </div>
+        ) : (
+          <div className="text-center mt-6 sm:mt-10">
+            <p className="text-gray-500 text-base sm:text-lg">
+              No merchant Counters available.
             </p>
           </div>
-        </div>
-      ))}
-    </div>
-  ) : (
-    <div className="text-center mt-6 sm:mt-10">
-      <p className="text-gray-500 text-base sm:text-lg">
-        No merchant Counters available.
-      </p>
-    </div>
-  )}
-</div>
+        )}
+      </div>
 
       {selectedCounter && (
         <EditCounterModal
@@ -269,15 +296,12 @@ const ManageCounter = () => {
         <DialogTitle>Delete Counter</DialogTitle>
         <DialogContent>
           <Typography>
-            Are you sure you want to delete "{counterToDelete?.name}"? This action cannot be
-            undone.
+            Are you sure you want to delete "{counterToDelete?.name}"? This
+            action cannot be undone.
           </Typography>
         </DialogContent>
         <DialogActions>
-          <Button 
-            onClick={() => setShowDeleteDialog(false)} 
-            color="secondary"
-          >
+          <Button onClick={() => setShowDeleteDialog(false)} color="secondary">
             Cancel
           </Button>
           <Button

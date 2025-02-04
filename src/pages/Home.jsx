@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import CounterCard from "@/components/CounterCard";
 import NavbarLayout from "@/components/NavbarLayout";
 import { makeApiCall } from "@/services/makeApiCall";
+import Breadcrumb from "@/components/Breadcrumb";
 
 const CounterSkeleton = () => (
   <div className="bg-gray-800/50 rounded-xl p-6 animate-pulse">
@@ -27,6 +28,17 @@ const Home = () => {
   const navigate = useNavigate();
   const counters = useSelector(selectCounters);
   const loading = useSelector((state) => state.counter.loading);
+
+  const breadcrumbItems = [
+    {
+      label: "Home",
+      path: "/",
+    },
+    {
+      label: "Counters",
+      path: "/home",
+    },
+  ];
 
   const fetchCounters = async () => {
     try {
@@ -84,46 +96,49 @@ const Home = () => {
 
   return (
     <div className="min-h-screen px-2 sm:px-6 md:px-20 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900">
-  <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8 pt-16 sm:pt-20 pb-16">
-    {/* Header Section */}
-    <div className="text-center mb-8 sm:mb-12">
-      <h1 className="text-3xl sm:text-4xl font-bold text-white mb-3 sm:mb-4">Food Counters</h1>
-      <p className="text-gray-400 max-w-2xl mx-auto text-sm sm:text-base">
-        Explore our diverse selection of food counters, each offering unique
-        and delicious cuisines prepared by expert chefs.
-      </p>
-    </div>
+      <Breadcrumb items={breadcrumbItems} />
+      <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8 pt-16 sm:pt-20 pb-16">
+        {/* Header Section */}
+        <div className="text-center mb-8 sm:mb-12">
+          <h1 className="text-3xl sm:text-4xl font-bold text-white mb-3 sm:mb-4">
+            Food Counters
+          </h1>
+          <p className="text-gray-400 max-w-2xl mx-auto text-sm sm:text-base">
+            Explore our diverse selection of food counters, each offering unique
+            and delicious cuisines prepared by expert chefs.
+          </p>
+        </div>
 
-    {loading ? (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
-        {Array.from(new Array(6)).map((_, index) => (
-          <CounterSkeleton key={index} />
-        ))}
+        {loading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
+            {Array.from(new Array(6)).map((_, index) => (
+              <CounterSkeleton key={index} />
+            ))}
+          </div>
+        ) : counters && counters.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
+            {counters.map((counter) => (
+              <CounterCard
+                key={counter._id}
+                counter={counter}
+                onClick={() => handleCounterClick(counter._id, counter)}
+                onEdit={handleEditCounter}
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-12 sm:py-16 bg-gray-800/50 rounded-xl backdrop-blur-sm">
+            <ChefHat className="h-12 w-12 sm:h-16 sm:w-16 text-gray-600 mx-auto mb-4" />
+            <p className="text-gray-400 text-base sm:text-lg">
+              No food counters available at the moment.
+            </p>
+            <p className="text-gray-500 mt-2 text-sm sm:text-base">
+              Please check back later for updates.
+            </p>
+          </div>
+        )}
       </div>
-    ) : counters && counters.length > 0 ? (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
-        {counters.map((counter) => (
-          <CounterCard
-            key={counter._id}
-            counter={counter}
-            onClick={() => handleCounterClick(counter._id, counter)}
-            onEdit={handleEditCounter}
-          />
-        ))}
-      </div>
-    ) : (
-      <div className="text-center py-12 sm:py-16 bg-gray-800/50 rounded-xl backdrop-blur-sm">
-        <ChefHat className="h-12 w-12 sm:h-16 sm:w-16 text-gray-600 mx-auto mb-4" />
-        <p className="text-gray-400 text-base sm:text-lg">
-          No food counters available at the moment.
-        </p>
-        <p className="text-gray-500 mt-2 text-sm sm:text-base">
-          Please check back later for updates.
-        </p>
-      </div>
-    )}
-  </div>
-</div>
+    </div>
   );
 };
 
