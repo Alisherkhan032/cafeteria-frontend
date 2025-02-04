@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { updateDish, removeDish, addDish } from "@/slices/counterSlice";
 import { setCart } from "@/slices/cartSlice";
 import { PlusCircle, Loader2, ChefHat } from "lucide-react";
-import toast, { Toaster} from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
 import Dish from "./DishCard";
 import EditDishModal from "./EditDishModal ";
 import CreateDishModal from "./CreateDishModal";
@@ -22,21 +22,25 @@ const LoadingOverlay = () => (
 );
 
 const MenuHeader = ({ onAddDish, isLoading, user }) => (
-  <div className="flex justify-between items-center mb-8">
-    <div>
-      <h2 className="text-3xl font-bold text-white mb-2">Menu</h2>
-      <p className="text-gray-400">Explore our delicious dishes</p>
+  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-0 mb-6 sm:mb-8">
+    <div className="w-full sm:w-auto">
+      <h2 className="text-2xl sm:text-3xl font-bold text-white mb-1 sm:mb-2">Menu</h2>
+      <p className="text-sm sm:text-base text-gray-400">Explore our delicious dishes</p>
     </div>
-    {user && user.role === ROLES.MERCHANT &&<button
-      className="px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-xl
-        flex items-center gap-2 transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed
+    
+    {user && user.role === ROLES.MERCHANT && (
+      <button
+        className="w-full sm:w-auto px-4 sm:px-6 py-2.5 sm:py-3 bg-purple-600 hover:bg-purple-700 
+        text-white font-semibold rounded-xl flex items-center justify-center sm:justify-start gap-2 
+        transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed
         shadow-lg shadow-purple-600/20"
-      disabled={isLoading}
-      onClick={onAddDish}
-    >
-      <PlusCircle className="h-5 w-5" />
-      Add Dish
-    </button>}
+        disabled={isLoading}
+        onClick={onAddDish}
+      >
+        <PlusCircle className="h-5 w-5" />
+        <span>Add Dish</span>
+      </button>
+    )}
   </div>
 );
 
@@ -46,9 +50,7 @@ const EmptyState = () => (
     <p className="text-gray-400 text-lg">
       No dishes available at this counter yet.
     </p>
-    <p className="text-gray-500 mt-2">
-      Please check back later for updates.
-    </p>
+    <p className="text-gray-500 mt-2">Please check back later for updates.</p>
   </div>
 );
 
@@ -93,7 +95,11 @@ const DishList = ({ dishes, counterId }) => {
   const handleEditSave = async (updatedDish) => {
     try {
       setIsLoading(true);
-      const responseData = await makeApiCall('patch', `/dishes/${updatedDish.id}`, updatedDish)
+      const responseData = await makeApiCall(
+        "patch",
+        `/dishes/${updatedDish.id}`,
+        updatedDish
+      );
       const updatedDishFromServer = responseData.dish;
       toast.success("Dish updated successfully");
       dispatch(updateDish(updatedDishFromServer));
@@ -110,7 +116,7 @@ const DishList = ({ dishes, counterId }) => {
   const handleDeleteDish = async (id) => {
     try {
       setIsLoading(true);
-      const responseData = await makeApiCall('delete', `/dishes/${id}`)
+      const responseData = await makeApiCall("delete", `/dishes/${id}`);
       const deletedDishFromServer = responseData.dish;
       toast.success("Dish deleted successfully");
       dispatch(removeDish(deletedDishFromServer));
@@ -125,7 +131,10 @@ const DishList = ({ dishes, counterId }) => {
   const handleCreateDish = async (newDish) => {
     try {
       setIsLoading(true);
-      const responseData = await makeApiCall('post', '/dishes', {...newDish, counter:counterId})
+      const responseData = await makeApiCall("post", "/dishes", {
+        ...newDish,
+        counter: counterId,
+      });
       const createdDish = responseData.dish;
       toast.success("Dish created successfully");
       dispatch(addDish(createdDish));
@@ -142,14 +151,24 @@ const DishList = ({ dishes, counterId }) => {
     <div className="relative">
       {isLoading && <LoadingOverlay />}
       <Toaster />
-      <MenuHeader user = {user} onAddDish={() => setShowCreateModal(true)} isLoading={isLoading} />
+      <MenuHeader
+        user={user}
+        onAddDish={() => setShowCreateModal(true)}
+        isLoading={isLoading}
+      />
 
       <div className="relative">
         <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-blue-500/10 rounded-xl blur-3xl"></div>
-        <div className="relative">
+        <div className="relative px-2 md:px-6 lg:px-8">
+          {" "}
+          {/* reduced padding on small screens */}
           {dishes && dishes.length > 0 ? (
-            <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 
-              ${isLoading ? "opacity-50" : ""} transition-opacity duration-200`}>
+            <div
+              className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 md:gap-6 
+        ${
+          isLoading ? "opacity-50" : ""
+        } transition-opacity duration-200 w-full`}
+            >
               {dishes.map((dish) => (
                 <Dish
                   key={dish._id}
@@ -186,4 +205,4 @@ const DishList = ({ dishes, counterId }) => {
   );
 };
 
-export default DishList
+export default DishList;

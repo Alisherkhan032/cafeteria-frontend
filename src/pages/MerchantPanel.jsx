@@ -50,10 +50,10 @@ const MerchantPanel = () => {
 
   return (
     <>
-      {/* Main content container */}
-      <div className="px-20 py-10 min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900">
+      {/* Main content container - Adjusted padding for mobile */}
+      <div className="px-4 sm:px-8 md:px-16 lg:px-20 py-6 sm:py-10 min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900">
         {loading ? (
-          <div className="">
+          <div className="grid grid-cols-1 gap-4">
             {Array.from(new Array(6)).map((_, index) => (
               <CounterSkeleton key={index} />
             ))}
@@ -64,11 +64,12 @@ const MerchantPanel = () => {
               <div
                 key={counter._id}
                 onClick={() => handleCounterClick(counter)}
-                className="relative flex items-center bg-gray-800/50 backdrop-blur-sm rounded-xl overflow-hidden border border-gray-700/50 
-                hover:border-purple-500/50 transition-all group duration-300 cursor-pointer p-4"
+                className="relative flex flex-col sm:flex-row items-start sm:items-center bg-gray-800/50 backdrop-blur-sm 
+                rounded-xl overflow-hidden border border-gray-700/50 hover:border-purple-500/50 transition-all 
+                group duration-300 cursor-pointer p-4"
               >
-                {/* Image Section */}
-                <div className="w-24 h-24 flex-shrink-0 relative">
+                {/* Image Section - Centered on mobile */}
+                <div className="w-full sm:w-24 h-48 sm:h-24 flex-shrink-0 relative mb-4 sm:mb-0">
                   <img
                     src={counter.image || DEFAULT_IMG_PATH}
                     alt={counter.name}
@@ -78,21 +79,26 @@ const MerchantPanel = () => {
                 </div>
 
                 {/* Content Section */}
-                <div className="ml-4 flex-1">
-                  <h3 className="text-xl font-bold text-white mb-1 group-hover:text-purple-400 transition-colors">
+                <div className="sm:ml-4 flex-1 w-full">
+                  <h3 className="text-xl font-bold text-white mb-2 sm:mb-1 group-hover:text-purple-400 transition-colors">
                     {counter.name}
                   </h3>
-                  <div className="flex flex-wrap gap-2 mb-2">
+                  
+                  {/* Merchant tags - Improved wrapping for mobile */}
+                  <div className="flex flex-wrap gap-2 mb-3 sm:mb-2">
                     {counter.merchant.map((merchant, index) => (
                       <span
                         key={index}
-                        className="bg-gray-900/60 backdrop-blur-sm px-2 py-1 rounded-lg text-sm text-gray-200"
+                        className="bg-gray-900/60 backdrop-blur-sm px-2 py-1 rounded-lg text-sm text-gray-200 
+                        inline-block"
                       >
                         {merchant.name}
                       </span>
                     ))}
                   </div>
-                  <p className="text-gray-200 text-sm line-clamp-2">
+                  
+                  {/* Description - Adjusted line clamp for better mobile readability */}
+                  <p className="text-gray-200 text-sm line-clamp-3 sm:line-clamp-2">
                     {counter.description}
                   </p>
                 </div>
@@ -100,7 +106,7 @@ const MerchantPanel = () => {
             ))}
           </div>
         ) : (
-          <div className="text-center mt-10">
+          <div className="text-center mt-6 sm:mt-10">
             <p className="text-gray-500 text-lg">
               No merchant Counters available.
             </p>
