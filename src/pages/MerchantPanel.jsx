@@ -15,6 +15,7 @@ import NavbarLayout from "@/components/NavbarLayout";
 import { makeApiCall } from "@/services/makeApiCall";
 import { CounterSkeleton } from "@/utils/skeletonConfig";
 import { DEFAULT_IMG_PATH } from "@/utils/constants";
+import Breadcrumb from "@/components/Breadcrumb";
 
 const MerchantPanel = () => {
   const dispatch = useDispatch();
@@ -22,6 +23,22 @@ const MerchantPanel = () => {
   const loading = useSelector(selectloadingState);
   const merchant = useSelector(selectCurrentUser);
   const merchantCounters = useSelector(selectMerchantCounters);
+
+  const breadcrumbItems = [
+    {
+      label: "Home",
+      path: "/",
+    },
+    {
+      label: "Counters",
+      path: "/home",
+    },
+    {
+      label: "Merchant Panel",
+      path: "/merchant",
+    },
+    
+  ];
   
   useEffect(() => {
     const fetchCounters = async () => {
@@ -51,7 +68,8 @@ const MerchantPanel = () => {
   return (
     <>
       {/* Main content container - Adjusted padding for mobile */}
-      <div className="px-4 sm:px-8 md:px-16 lg:px-20 py-6 sm:py-10 min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900">
+      <div className="min-h-screen px-2 sm:px-6 md:px-20 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900">
+        <Breadcrumb items={breadcrumbItems} />
         {loading ? (
           <div className="grid grid-cols-1 gap-4">
             {Array.from(new Array(6)).map((_, index) => (

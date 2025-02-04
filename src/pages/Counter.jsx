@@ -9,10 +9,11 @@ import {
   setCurrentCounter,
 } from "@/slices/counterSlice";
 import { useParams } from "react-router-dom";
-import { Store, ChefHat } from "lucide-react";
+import { Store, ChefHat, HomeIcon, ShoppingCartIcon, Soup } from "lucide-react";
 import DishList from "@/components/DishList";
 import { makeApiCall } from "@/services/makeApiCall";
 import NavbarLayout from "@/components/NavbarLayout";
+import Breadcrumb from "@/components/Breadcrumb";
 
 const CounterSkeleton = () => (
   <div className="w-full mb-6 animate-pulse">
@@ -29,6 +30,21 @@ const Counter = () => {
   const currentCounter = useSelector(selectCurrentCounter);
   const counterName = currentCounter?.name;
   const { counterId } = useParams();
+
+  const breadcrumbItems = [
+    {
+      label: "Home",
+      path: "/",
+    },
+    {
+      label: "Counters",
+      path: "/home",
+    },
+    {
+      label: "Dishes",
+      path: "/",
+    },
+  ];
 
   const fetchDishes = async () => {
     try {
@@ -71,6 +87,7 @@ const Counter = () => {
 
   return (
     <div className="min-h-screen px-4 md:px-20 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900">
+      <Breadcrumb items={breadcrumbItems} />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-16">
         {loading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
