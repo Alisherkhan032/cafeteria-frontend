@@ -5,12 +5,23 @@ import { toast } from 'react-hot-toast';
 import NavbarLayout from '@/components/NavbarLayout';
 import { selectCurrentUser } from '@/slices/authSlice';
 import { useSelector } from 'react-redux';
+import { makeApiCall } from '@/services/makeApiCall';
+import { useDispatch } from 'react-redux';
+import { resetAuthSlice } from '@/slices/authSlice';
+import { resetCart } from '@/slices/cartSlice';
+import { resetCounterSlice } from '@/slices/counterSlice';
 
 const ProfilePage = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const user = useSelector(selectCurrentUser)
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    await makeApiCall( 'post','/auth/logout');
+    // Reset all slices
+    dispatch(resetAuthSlice());
+    dispatch(resetCart());
+    dispatch(resetCounterSlice());
     // Clear auth token
     localStorage.removeItem('token');
     // Show success message
