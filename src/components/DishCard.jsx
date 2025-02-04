@@ -40,7 +40,7 @@ const DishCard = ({
     <>
       <div
         className="bg-gray-800/50 relative backdrop-blur-sm rounded-xl overflow-hidden border border-gray-700/50 
-  hover:border-purple-500/50 transition-all duration-300 group flex flex-col h-full"
+  hover:border-purple-500/50 transition-all duration-300 group flex flex-col h-full mx-auto w-full max-w-full sm:max-w-lg"
       >
         <div className="aspect-video relative overflow-hidden flex-shrink-0">
           <img
@@ -116,21 +116,19 @@ const DishCard = ({
                   Out of Stock
                 </button>
               ) : isInCart ? (
-                user.role == ROLES.CUSTOMER && (
-                  <Link to="/cart" className="">
-                    <button
-                      disabled={isLoading}
-                      className={`px-4 py-2 rounded-lg flex items-center gap-2 cursor-pointer transition-all duration-300 ${
-                        isInCart
-                          ? "bg-green-600/20 hover:bg-green-700/20 text-green-400"
-                          : "bg-purple-600 hover:bg-purple-700 text-white"
-                      }`}
-                    >
-                      <ShoppingCart className="h-5 w-5" />
-                      Go to Cart
-                    </button>
-                  </Link>
-                )
+                <Link to="/cart" className="">
+                  <button
+                    disabled={isLoading}
+                    className={`px-4 py-2 rounded-lg flex items-center gap-2 cursor-pointer transition-all duration-300 ${
+                      isInCart
+                        ? "bg-green-600/20 hover:bg-green-700/20 text-green-400"
+                        : "bg-purple-600 hover:bg-purple-700 text-white"
+                    }`}
+                  >
+                    <ShoppingCart className="h-5 w-5" />
+                    Go to Cart
+                  </button>
+                </Link>
               ) : (
                 user.role == ROLES.CUSTOMER && (
                   <button

@@ -67,7 +67,7 @@ export function Login() {
   return (
     <div className="min-h-screen py-4 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900">
       <Link to="/">
-        <div className="flex items-center space-x-1  ml-2 cursor-pointer">
+        <div className="flex items-center space-x-1  ml-2 mb-8 cursor-pointer">
           <ArrowLeft className="text-yellow-400" size={28} />
           <div className="text-white text-2xl font-bold whitespace-nowrap">
             Go back
@@ -188,7 +188,7 @@ export function Register() {
   return (
     <div className="min-h-screen py-4 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900">
       <Link to="/">
-        <div className="flex items-center space-x-1   ml-2 cursor-pointer">
+        <div className="flex items-center space-x-1  mb-8 ml-2 cursor-pointer">
           <ArrowLeft className="text-yellow-400" size={28} />
           <div className="text-white text-2xl font-bold whitespace-nowrap">
             Go back

@@ -6,10 +6,10 @@ import {
   selectloadingState,
   setLoading,
   selectCurrentCounter,
-  setCurrentCounter
+  setCurrentCounter,
 } from "@/slices/counterSlice";
 import { useParams } from "react-router-dom";
-import { Store, ChefHat } from 'lucide-react';
+import { Store, ChefHat } from "lucide-react";
 import DishList from "@/components/DishList";
 import { makeApiCall } from "@/services/makeApiCall";
 import NavbarLayout from "@/components/NavbarLayout";
@@ -33,7 +33,10 @@ const Counter = () => {
   const fetchDishes = async () => {
     try {
       dispatch(setLoading(true));
-      const responseData = await makeApiCall("get", `/dishes/counter/${counterId}`);
+      const responseData = await makeApiCall(
+        "get",
+        `/dishes/counter/${counterId}`
+      );
       const { dishes } = responseData;
       dispatch(setDishes(dishes));
     } catch (error) {
@@ -42,24 +45,24 @@ const Counter = () => {
       dispatch(setLoading(false));
     }
   };
-  
+
   const fetchCounter = async () => {
     try {
       dispatch(setLoading(true));
       const responseData = await makeApiCall("get", `/counters/${counterId}`);
       const currentCounter = responseData;
-      dispatch(setCurrentCounter(currentCounter))  ; 
+      dispatch(setCurrentCounter(currentCounter));
     } catch (error) {
       console.error("Error fetching counter:", error.message);
     } finally {
       dispatch(setLoading(false));
     }
   };
-  
+
   useEffect(() => {
     fetchDishes();
     fetchCounter();
-  
+
     return () => {
       dispatch(setDishes([]));
       dispatch(setCurrentCounter(null));
@@ -67,10 +70,10 @@ const Counter = () => {
   }, [counterId]);
 
   return (
-    <div className="min-h-screen px-20 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900">
+    <div className="min-h-screen px-4 md:px-20 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-16">
         {loading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {Array.from(new Array(3)).map((_, index) => (
               <CounterSkeleton key={index} />
             ))}
@@ -81,10 +84,10 @@ const Counter = () => {
               <div className="inline-flex items-center justify-center p-3 bg-gray-800 rounded-full mb-4">
                 <Store className="h-8 w-8 text-purple-500" />
               </div>
-              <h1 className="text-4xl font-bold text-white mb-4">
-                Welcome to : {counterName}
+              <h1 className="text-3xl sm:text-4xl font-bold text-white mb-4">
+                {counterName}
               </h1>
-              <div className="h-1 w-20 bg-purple-500 mx-auto rounded-full"></div>
+              <div className="h-1 w-16 sm:w-20 bg-purple-500 mx-auto rounded-full"></div>
             </div>
             <DishList dishes={dishes} counterId={counterId} />
           </>
@@ -94,10 +97,10 @@ const Counter = () => {
   );
 };
 
-export default function Wrapper(){
+export default function Wrapper() {
   return (
     <NavbarLayout>
       <Counter />
     </NavbarLayout>
-  )
+  );
 }

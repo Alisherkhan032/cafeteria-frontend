@@ -29,25 +29,23 @@ const LandingPage = () => {
           <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/70 to-transparent"></div>
         </div>
 
-        <div className="relative z-10 container px-4">
-          <div className="max-w-4xl mx-auto text-center">
-            <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 leading-tight">
-              Taste the <span className="text-purple-400">Difference</span>
-            </h1>
-            <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-2xl mx-auto">
-              Experience culinary excellence delivered to your doorstep
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link
-                to="/home"
-                className="bg-purple-600 text-white px-8 py-4 rounded-xl font-semibold hover:bg-purple-700 transition-all flex items-center gap-2 group"
-              >
-                Explore Restaurants
-                <ChevronRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
-              </Link>
-            </div>
-          </div>
-        </div>
+        <div className="relative z-10 container mx-auto text-center">
+    <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold text-white mb-6 leading-tight">
+      Taste the <span className="text-purple-400">Difference</span>
+    </h1>
+    <p className="text-lg sm:text-xl md:text-2xl text-gray-300 mb-8 max-w-2xl mx-auto">
+      Experience culinary excellence delivered to your doorstep
+    </p>
+    <div className="flex justify-center">
+      <Link
+        to="/home"
+        className="bg-purple-600 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-semibold hover:bg-purple-700 transition-all flex items-center gap-2 group"
+      >
+        Explore Restaurants
+        <ChevronRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
+      </Link>
+    </div>
+  </div>
       </section>
 
       {/* Features Section */}

@@ -134,14 +134,15 @@ const ManageUsers = () => {
 
 
   return (
-    <div className="px-8 min-h-screen py-6 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900">
-      {/* Filters Section */}
+    <div className="px-4 sm:px-8 min-h-screen py-6 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900">
       <Toaster position="top-right" />
       {loading && <LoadingOverlay />}
-      <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
-        <h1 className="text-2xl font-bold text-white">User Management</h1>
+      
+      {/* Header Section - Made responsive */}
+      <div className="flex flex-col gap-4 mb-6">
+        <h1 className="text-2xl font-bold text-white text-center sm:text-left">User Management</h1>
 
-        <div className="flex items-center gap-4 w-full sm:w-auto">
+        <div className="flex flex-col sm:flex-row gap-4">
           <div className="relative flex-1">
             <input
               type="text"
@@ -166,55 +167,68 @@ const ManageUsers = () => {
 
           <button
             onClick={() => setShowAddModal(true)}
-            className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg flex items-center gap-2"
+            className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg flex items-center justify-center gap-2"
           >
             <UserPlus className="h-5 w-5" />
-            <span className="hidden sm:inline">Add User</span>
+            <span>Add User</span>
           </button>
         </div>
       </div>
 
-      {/* Users Table */}
-      <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl border border-gray-700/50 overflow-x-auto">
-        <table className="w-full">
-          <thead className="bg-gray-900/60">
-            <tr>
-              <th className="px-6 py-4 text-left text-gray-300 font-medium">
-                Name
-              </th>
-              <th className="px-6 py-4 text-left text-gray-300 font-medium">
-                Email
-              </th>
-              <th className="px-6 py-4 text-left text-gray-300 font-medium">
-                Role
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {users.map((user) => (
-              <tr
-                key={user._id}
-                className="border-b border-gray-700/50 hover:bg-gray-900/20"
-              >
-                <td className="px-6 py-4 text-white">{user.name}</td>
-                <td className="px-6 py-4 text-gray-400">{user.email}</td>
-                <td className="px-6 py-4">
-                  <select
-                    value={user.role}
-                    onChange={(e) =>
-                      handleRoleChangeForUser(user._id, e.target.value)
-                    }
-                    className="bg-gray-700 border border-gray-600 rounded px-3 py-1 text-white focus:outline-none focus:border-purple-500"
-                  >
-                    <option value="customer">Customer</option>
-                    <option value="merchant">Merchant</option>
-                    <option value="admin">Admin</option>
-                  </select>
-                </td>
+      {/* Responsive Table/Card View */}
+      <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl border border-gray-700/50">
+        {/* Desktop Table View */}
+        <div className="hidden sm:block overflow-x-auto">
+          <table className="w-full">
+            <thead className="bg-gray-900/60">
+              <tr>
+                <th className="px-6 py-4 text-left text-gray-300 font-medium">Name</th>
+                <th className="px-6 py-4 text-left text-gray-300 font-medium">Email</th>
+                <th className="px-6 py-4 text-left text-gray-300 font-medium">Role</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {users.map((user) => (
+                <tr key={user._id} className="border-b border-gray-700/50 hover:bg-gray-900/20">
+                  <td className="px-6 py-4 text-white">{user.name}</td>
+                  <td className="px-6 py-4 text-gray-400">{user.email}</td>
+                  <td className="px-6 py-4">
+                    <select
+                      value={user.role}
+                      onChange={(e) => handleRoleChangeForUser(user._id, e.target.value)}
+                      className="bg-gray-700 border border-gray-600 rounded px-3 py-1 text-white focus:outline-none focus:border-purple-500"
+                    >
+                      <option value="customer">Customer</option>
+                      <option value="merchant">Merchant</option>
+                      <option value="admin">Admin</option>
+                    </select>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Mobile Card View */}
+        <div className="sm:hidden">
+          {users.map((user) => (
+            <div key={user._id} className="p-4 border-b border-gray-700/50">
+              <div className="flex flex-col gap-2">
+                <div className="text-white font-medium">{user.name}</div>
+                <div className="text-gray-400 text-sm">{user.email}</div>
+                <select
+                  value={user.role}
+                  onChange={(e) => handleRoleChangeForUser(user._id, e.target.value)}
+                  className="bg-gray-700 border border-gray-600 rounded px-3 py-1 text-white focus:outline-none focus:border-purple-500 mt-2"
+                >
+                  <option value="customer">Customer</option>
+                  <option value="merchant">Merchant</option>
+                  <option value="admin">Admin</option>
+                </select>
+              </div>
+            </div>
+          ))}
+        </div>
 
         {users.length === 0 && (
           <div className="p-6 text-center text-gray-400">
@@ -223,37 +237,35 @@ const ManageUsers = () => {
         )}
       </div>
 
-      {/* Pagination */}
-      <div className="flex justify-between items-center mt-6">
-        <div className="text-gray-400">
+      {/* Responsive Pagination */}
+      <div className="flex flex-col sm:flex-row justify-between items-center mt-6 gap-4">
+        <div className="text-gray-400 order-2 sm:order-1">
           Showing page {currentPage} of {totalPages}
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 order-1 sm:order-2">
           <button
             onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
             disabled={currentPage === 1}
             className="bg-gray-800 disabled:opacity-50 hover:bg-gray-700 px-4 py-2 rounded-lg text-white flex items-center gap-2"
           >
             <ChevronLeft className="h-5 w-5" />
-            Previous
+            <span className="hidden sm:inline">Previous</span>
           </button>
           <button
-            onClick={() =>
-              setCurrentPage(Math.min(totalPages, currentPage + 1))
-            }
+            onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
             disabled={currentPage === totalPages}
             className="bg-gray-800 disabled:opacity-50 hover:bg-gray-700 px-4 py-2 rounded-lg text-white flex items-center gap-2"
           >
-            Next
+            <span className="hidden sm:inline">Next</span>
             <ChevronRight className="h-5 w-5" />
           </button>
         </div>
       </div>
 
-      {/* Add User Modal */}
+      {/* Responsive Modal */}
       {showAddModal && (
-        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center">
-          <div className="bg-gray-800 rounded-xl p-6 w-full max-w-md">
+        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-gray-800 rounded-xl p-4 sm:p-6 w-full max-w-md">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl font-semibold text-white">Add New User</h2>
               <button
@@ -270,9 +282,7 @@ const ManageUsers = () => {
                 <input
                   type="text"
                   value={newUser.name}
-                  onChange={(e) =>
-                    setNewUser({ ...newUser, name: e.target.value })
-                  }
+                  onChange={(e) => setNewUser({ ...newUser, name: e.target.value })}
                   className="w-full bg-gray-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
                 />
               </div>
@@ -281,9 +291,7 @@ const ManageUsers = () => {
                 <input
                   type="email"
                   value={newUser.email}
-                  onChange={(e) =>
-                    setNewUser({ ...newUser, email: e.target.value })
-                  }
+                  onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
                   className="w-full bg-gray-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
                 />
               </div>
@@ -291,9 +299,7 @@ const ManageUsers = () => {
                 <label className="block text-gray-300 mb-2">Role</label>
                 <select
                   value={newUser.role}
-                  onChange={(e) =>
-                    setNewUser({ ...newUser, role: e.target.value })
-                  }
+                  onChange={(e) => setNewUser({ ...newUser, role: e.target.value })}
                   className="w-full bg-gray-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
                 >
                   <option value="customer">Customer</option>
@@ -306,9 +312,7 @@ const ManageUsers = () => {
                 <input
                   type={showPassword ? "text" : "password"}
                   value={newUser.password}
-                  onChange={(e) =>
-                    setNewUser({ ...newUser, password: e.target.value })
-                  }
+                  onChange={(e) => setNewUser({ ...newUser, password: e.target.value })}
                   className="w-full bg-gray-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-purple-500 pr-10"
                 />
                 <button
