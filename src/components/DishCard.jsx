@@ -115,7 +115,7 @@ const DishCard = ({
                   <ShoppingCart className="h-5 w-5" />
                   Out of Stock
                 </button>
-              ) : isInCart ? (
+              ) : isInCart ? ( user.role == ROLES.CUSTOMER &&
                 <Link to="/cart" className="">
                   <button
                     disabled={isLoading}
