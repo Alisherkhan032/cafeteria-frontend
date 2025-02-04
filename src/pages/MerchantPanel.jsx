@@ -29,10 +29,10 @@ const MerchantPanel = () => {
       label: "Home",
       path: "/",
     },
-    {
-      label: "Counters",
-      path: "/home",
-    },
+    // {
+    //   label: "Counters",
+    //   path: "/home",
+    // },
     {
       label: "Merchant Panel",
       path: "/merchant",

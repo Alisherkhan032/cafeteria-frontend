@@ -38,7 +38,7 @@ const Counter = () => {
     },
     {
       label: "Counters",
-      path: "/home",
+      path: `/merchant`,
     },
     {
       label: "Dishes",

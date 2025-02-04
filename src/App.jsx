@@ -5,7 +5,7 @@ import Cart from "./pages/Cart";
 import Admin from "./pages/AdminPanel";
 import Merchant from "./pages/MerchantPanel";
 import Profile from "./pages/Profile";
-import { Auth, Login, Register } from "./pages/AuthPages";
+import { Auth, Login, Register , CustomerRoute} from "./pages/AuthPages";
 import Navbar from "./components/Navbar";
 import {
   setCurrentUser,
@@ -63,22 +63,27 @@ function App() {
   return (
     <>
       <Router>
-        <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/" element={<LandingPage />} />
-          <Route element={<Auth />}>  
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/" element={<LandingPage />} />
+
+        <Route element={<Auth />}>
+          {/* Only customers and admin can access Home */}
+          <Route element={<CustomerRoute />}>
             <Route path="/home" element={<Home />} />
-            <Route path="/counter/:counterId" element={<Counter />} />
-            <Route path="/cart" element={<Cart />} />
-            <Route path="/admin" element={<Admin />} />
-            <Route path="/merchant" element={<Merchant />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/manage-users" element={<Users />} />
-            <Route path="/manage-counters" element={<ManageCounter />} />
           </Route>
-        </Routes>
-      </Router>
+
+          <Route path="/counter/:counterId" element={<Counter />} />
+          <Route path="/cart" element={<Cart />} />
+          <Route path="/admin" element={<Admin />} />
+          <Route path="/merchant" element={<Merchant />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/manage-users" element={<Users />} />
+          <Route path="/manage-counters" element={<ManageCounter />} />
+        </Route>
+      </Routes>
+    </Router>
     </>
   );
 }

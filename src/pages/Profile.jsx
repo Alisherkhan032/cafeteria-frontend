@@ -22,10 +22,10 @@ const ProfilePage = () => {
       label: "Home",
       path: "/",
     },
-    {
-      label: "Counters",
-      path: "/home",
-    },
+    // {
+    //   label: "Counters",
+    //   path: "/home",
+    // },
     {
       label: "Profile",
       path: "/profile",
