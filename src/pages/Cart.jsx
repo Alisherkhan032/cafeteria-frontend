@@ -129,7 +129,7 @@ const Cart = () => {
               </p>
               {!cartItems.length == 0 && (
                 <button
-                  className="flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 mt-3 cursor-pointer rounded-md transition bg-red-500 text-white hover:bg-red-600 text-sm sm:text-base"
+                  className="flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 mt-3 cursor-pointer rounded-md transition bg-rose-500 text-white hover:bg-rose-700 text-sm sm:text-base"
                   onClick={handleClearCart}
                 >
                   <Trash2 size={18} />
