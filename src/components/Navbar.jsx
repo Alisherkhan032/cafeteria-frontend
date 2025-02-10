@@ -86,7 +86,7 @@ const Navbar = () => {
             className="flex items-center space-x-2 text-white hover:text-yellow-400 transition-colors py-2"
             onClick={() => setIsOpen(false)}
           >
-            <div className="flex items-center  text-white font-medium text-2xl sm:text-3xl">
+            <div className="flex items-center text-white font-medium text-2xl sm:text-3xl">
               <i className="fi fi-rs-dolly-flatbed-empty"></i>
               <span className="text-yellow-400 text-base sm:text-xl -ml-4 -mt-3">
                 {totalItemsInCart}
@@ -102,52 +102,54 @@ const Navbar = () => {
   );
 
   return (
-    <nav className="relative w-full px-6 py-2 bg-gray-900 z-50 border-b border-gray-700 shadow-lg">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center justify-center space-x-2">
-          {/* Logo */}
-          <Link to="/" className="flex items-center space-x-3">
-            <UtensilsCrossed className="text-yellow-400" size={28} />
-            <div className="text-white text-2xl font-bold whitespace-nowrap">
-              Urban-Eats
+    <nav className="relative w-full bg-gray-900 z-50 border-b border-gray-700 shadow-lg">
+      <div className="mx-auto max-w-7xl px-4 lg:px-6 py-2">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center justify-center space-x-4 lg:space-x-6">
+            {/* Logo */}
+            <Link to="/" className="flex items-center space-x-3">
+              <UtensilsCrossed className="text-yellow-400" size={28} />
+              <div className="text-white text-2xl font-bold whitespace-nowrap">
+                Urban-Eats
+              </div>
+            </Link>
+
+            {/* Welcome Message */}
+            <div className="hidden md:block text-white text-xl mt-1 whitespace-nowrap">
+              Welcome{" "}
+              <span className="text-base text-yellow-400">
+                {capitalize(user?.name)}
+              </span>
             </div>
-          </Link>
-
-          {/* Welcome Message */}
-          <div className="hidden md:block text-white text-xl mt-1 whitespace-nowrap">
-            Welcome{" "}
-            <span className="text-base text-yellow-400">
-              {capitalize(user?.name)}
-            </span>
           </div>
+
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex items-center space-x-6 lg:space-x-8">
+            <NavLinks />
+          </div>
+
+          {/* Mobile Menu Button */}
+          <button
+            className="md:hidden text-white hover:text-yellow-400 transition-colors focus:outline-none"
+            onClick={() => setIsOpen(!isOpen)}
+          >
+            {isOpen ? <X size={28} /> : <Menu size={28} />}
+          </button>
         </div>
 
-        {/* Desktop Navigation */}
-        <div className="hidden md:flex items-center space-x-6">
-          <NavLinks />
-        </div>
-
-        {/* Mobile Menu Button */}
-        <button
-          className="md:hidden text-white hover:text-yellow-400 transition-colors focus:outline-none"
-          onClick={() => setIsOpen(!isOpen)}
-        >
-          {isOpen ? <X size={28} /> : <Menu size={28} />}
-        </button>
+        {/* Mobile Navigation */}
+        {isOpen && (
+          <div className="md:hidden absolute top-full left-0 w-full bg-gray-900 border-t border-gray-700 px-6 py-4 space-y-4">
+            <div className="text-white text-xl whitespace-nowrap mb-4">
+              Welcome{" "}
+              <span className="text-base text-yellow-400">
+                {capitalize(user?.name)}
+              </span>
+            </div>
+            <NavLinks />
+          </div>
+        )}
       </div>
-
-      {/* Mobile Navigation */}
-      {isOpen && (
-        <div className="md:hidden absolute top-full left-0 w-full bg-gray-900 border-t border-gray-700 px-6 py-4 space-y-4">
-          <div className="text-white text-xl whitespace-nowrap mb-4">
-            Welcome{" "}
-            <span className="text-base text-yellow-400">
-              {capitalize(user?.name)}
-            </span>
-          </div>
-          <NavLinks />
-        </div>
-      )}
     </nav>
   );
 };
