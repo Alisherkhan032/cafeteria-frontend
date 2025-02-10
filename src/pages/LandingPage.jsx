@@ -33,7 +33,7 @@ const LandingPage = () => {
           <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/70 to-transparent"></div>
         </div>
 
-        <div className="relative z-10 container mx-auto text-center">
+        <div className="relative z-10 container mx-auto px-4 max-w-7xl text-center">
           <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold text-white mb-6 leading-tight">
             Taste the <span className="text-purple-400">Difference</span>
           </h1>
@@ -64,7 +64,7 @@ const LandingPage = () => {
 
       {/* Features Section */}
       <section className="py-20 bg-gray-800/30">
-        <div className="container px-4 grid md:grid-cols-3 gap-8">
+        <div className="container mx-auto px-4 max-w-7xl grid md:grid-cols-3 gap-8">
           <div className="p-6 bg-gray-900/50 rounded-xl border border-gray-700 hover:border-purple-500/50 transition-all group">
             <div className="mb-4 text-purple-400">
               <Truck className="h-8 w-8" />
@@ -103,7 +103,7 @@ const LandingPage = () => {
 
       {/* Cuisine Section */}
       <section className="min-h-screen flex items-center py-20">
-        <div className="container px-4 grid lg:grid-cols-2 gap-12 items-center">
+        <div className="container mx-auto px-4 max-w-7xl grid lg:grid-cols-2 gap-12 items-center">
           <div className="relative group overflow-hidden rounded-2xl hover:shadow-2xl transition-all duration-500">
             <img
               src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?q=80&w=1987&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
@@ -144,7 +144,7 @@ const LandingPage = () => {
 
       {/* Popular Dishes Section */}
       <section className="py-20 bg-gray-900">
-        <div className="container px-4">
+        <div className="container mx-auto px-4 max-w-7xl">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
               <span className="text-purple-400">Signature</span> Creations
@@ -186,7 +186,7 @@ const LandingPage = () => {
 
       {/* How It Works Section */}
       <section className="py-20 bg-gray-800/30">
-        <div className="container px-4">
+        <div className="container mx-auto px-4 max-w-7xl">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
               <span className="text-purple-400">Simple</span> Steps
@@ -237,7 +237,7 @@ const LandingPage = () => {
 
       {/* Testimonials Section */}
       <section className="py-20 bg-gray-900">
-        <div className="container px-4">
+        <div className="container mx-auto px-4 max-w-7xl">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
               What Our <span className="text-purple-400">Customers</span> Say
@@ -272,10 +272,10 @@ const LandingPage = () => {
                           />
                         )
                       )}
-                      {testimonial.rating % 1 !== 0 && ( // Handle half-star ratings
+                      {testimonial.rating % 1 !== 0 && (
                         <Star
                           className="h-4 w-4 text-yellow-400 fill-current"
-                          style={{ clipPath: "inset(0 50% 0 0)" }} // Half-star effect
+                          style={{ clipPath: "inset(0 50% 0 0)" }}
                         />
                       )}
                     </div>
@@ -289,36 +289,37 @@ const LandingPage = () => {
       </section>
 
       {/* App Section */}
-      <section className="min-h-screen flex items-center bg-gray-800/30">
-        <div className="container px-4 grid lg:grid-cols-2 gap-12 items-center">
-          <div className="text-center lg:text-left order-last lg:order-first">
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-              Get the <span className="text-purple-400">Mobile App</span>
-            </h2>
-            <p className="text-xl text-gray-300 mb-8 max-w-xl mx-auto lg:mx-0">
-              Enjoy exclusive offers, track your orders in real-time, and get
-              personalized recommendations
-            </p>
-            <div className="flex gap-4 justify-center lg:justify-start">
-              <button className="flex items-center gap-2 px-6 py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors">
-                <img src={playstorePng} className="h-6 w-6" alt="Google Play" />
-                Google Play
-              </button>
-              <button className="flex items-center gap-2 px-6 py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors">
-                <img src={appstorePng} className="h-6 w-6" alt="App Store" />
-                App Store
-              </button>
-            </div>
-          </div>
-          <div className="relative group overflow-hidden rounded-2xl">
-            <img
-              src="https://images.unsplash.com/photo-1587573578335-9672da4d0292?q=80&w=1964&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-              alt="Mobile App"
-              className="w-full h-[600px] object-cover transform group-hover:scale-105 transition-transform duration-500"
-            />
-          </div>
-        </div>
-      </section>
+      {/* App Section */}
+<section className="min-h-screen flex items-center bg-gray-800/30">
+  <div className="container mx-auto px-4 max-w-7xl grid lg:grid-cols-2 gap-12 items-center">
+    <div className="text-center lg:text-left order-last lg:order-first">
+      <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+        Get the <span className="text-purple-400">Mobile App</span>
+      </h2>
+      <p className="text-xl text-gray-300 mb-8 max-w-xl mx-auto lg:mx-0">
+        Enjoy exclusive offers, track your orders in real-time, and get
+        personalized recommendations
+      </p>
+      <div className="flex gap-4 justify-center lg:justify-start">
+        <button className="flex items-center gap-2 px-6 py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors">
+          <img src={playstorePng} className="h-6 w-6" alt="Google Play" />
+          Google Play
+        </button>
+        <button className="flex items-center gap-2 px-6 py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors">
+          <img src={appstorePng} className="h-6 w-6" alt="App Store" />
+          App Store
+        </button>
+      </div>
+    </div>
+    <div className="relative group overflow-hidden rounded-2xl">
+      <img
+        src="https://images.unsplash.com/photo-1587573578335-9672da4d0292?q=80&w=1964&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+        alt="Mobile App"
+        className="w-full h-[600px] object-cover transform group-hover:scale-105 transition-transform duration-500"
+      />
+    </div>
+  </div>
+</section>
     </div>
   );
 };
